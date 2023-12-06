@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainMenuLayout"
+    android:layout_width="match_parent"
+    android:background="@color/default_bg"
+    android:layout_height="match_parent"
+    tools:context=".activities.MainActivity">
+
+    <TextView
+        android:id="@+id/textViewMainMenuTitle"
+        style="@style/text_view"
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:text="SeaNulls"
+        android:textAlignment="gravity"
+        android:textSize="36sp"
+        android:typeface="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/buttonMainMenuPlay"
+        app:layout_constraintStart_toStartOf="@+id/buttonMainMenuPlay"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.32999999" />
+
+    <Button
+        android:id="@+id/buttonMainMenuPlay"
+        style="@style/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onPlayClick"
+        android:text="Играть"
+        android:textAlignment="gravity"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:tooltipText="Нажмите чтобы начать игру"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.65999999" />
+
+    <TextView
+        android:id="@+id/textViewInfo"
+        style="@style/text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="32dp"
+        android:text="О программе"
+        android:tooltipText="Нажмите чтобы узнать о программе"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/buttonMainMenuPlay"
+        app:layout_constraintStart_toStartOf="@+id/buttonMainMenuPlay"
+        app:layout_constraintTop_toBottomOf="@+id/buttonMainMenuPlay" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
