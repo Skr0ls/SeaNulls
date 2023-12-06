@@ -120,12 +120,13 @@
 
     <Button
         android:id="@+id/buttonRemove"
+        style="@style/button"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         android:text="Убрать"
-        style="@style/button"
+        android:textAllCaps="false"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/grid"
@@ -134,11 +135,12 @@
 
     <Button
         android:id="@+id/buttonRotate"
+        style="@style/button"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="Повернуть"
-        style="@style/button"
+        android:textAllCaps="false"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/buttonRemove"
         app:layout_constraintEnd_toStartOf="@+id/buttonBack"
@@ -148,12 +150,13 @@
 
     <Button
         android:id="@+id/buttonNext"
+        style="@style/button"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="Далее"
-        style="@style/button"
+        android:textAllCaps="false"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -162,9 +165,10 @@
         android:id="@+id/buttonBack"
         style="@style/button"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="Назад"
+        android:textAllCaps="false"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/buttonNext"
         app:layout_constraintEnd_toStartOf="@+id/buttonNext"
