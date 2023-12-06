@@ -12,22 +12,19 @@ class InfoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_info)
-        val buttonBack = findViewById<Button>(R.id.buttonBackToMainMenuFromInfo)
+
         NavigationPanelRemover.remove(this)
+
+        val buttonBack = findViewById<Button>(R.id.buttonBackToMainMenuFromInfo)
         buttonBack.setOnClickListener {
-            backToMainMenu()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        finish()
-    }
-
-
-    private fun backToMainMenu() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
         finish()
     }
 }

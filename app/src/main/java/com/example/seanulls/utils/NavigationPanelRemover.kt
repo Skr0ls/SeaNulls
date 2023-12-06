@@ -5,7 +5,14 @@ import android.os.Build
 import android.view.View
 
 object NavigationPanelRemover {
+    /**
+     * Объект NavigationPanelRemover предоставляет метод remove для скрытия навигационной панели в приложении Android.
+     */
 
+    /**
+     * Метод remove используется для скрытия навигационной панели в приложении.
+     * Использует системные флаги для управления видимостью элементов интерфейса.
+     */
     fun remove(activity: Activity) {
         val currentApiVersion: Int
         currentApiVersion = Build.VERSION.SDK_INT

@@ -9,7 +9,11 @@ import com.example.seanulls.models.VerticalShipAssetSample
 import java.io.IOException
 
 object AppAssetsManager {
-    private var preferenceManager: AppPreferenceManager? = null
+    /**
+     * Объект AppAssetsManager отвечает за загрузку ресурсов из ассетов приложения.
+     * Он используется для работы с изображениями кораблей, различными элементами интерфейса и другими ресурсами.
+     */
+
     private var context: Context? = null
     private var assets: AssetManager? = null
     private const val THEME_DEFAULT = "themes/default"
@@ -26,15 +30,22 @@ object AppAssetsManager {
     var layoutSprites: ArrayList<Drawable> = ArrayList()
         private set
 
+
+    /**
+     * Метод loadAssets загружает необходимые ресурсы из ассетов.
+     * Это включает в себя загрузку изображений кораблей и других элементов интерфейса.
+     */
     fun loadAssets(_context: Context?) {
         context = _context
         assets = context!!.assets
-        preferenceManager = AppPreferenceManager(context!!, AppPreferenceManager.SPRITES)
-        preferenceManager!!.containChecker()
+
         loadLayoutSprites()
         loadShipSprites()
     }
 
+    /**
+     * Метод loadLayoutSprites загружает спрайты для различных элементов интерфейса игрового поля.
+     */
     private fun loadLayoutSprites() {
         val PATH = THEME + "/" + LAYOUT
         val filter = ArrayList<Drawable>()
@@ -66,6 +77,9 @@ object AppAssetsManager {
         //22 - cell_checked
     }
 
+    /**
+     * Метод loadShipSprites загружает спрайты для изображений кораблей.
+     */
     private fun loadShipSprites() {
         ships = ArrayList()
         val sprites = ArrayList<Drawable>()

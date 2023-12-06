@@ -11,25 +11,28 @@ class Ship(@JvmField val id: Int, @JvmField val size: Int, @JvmField val viewShi
     private var defaultBackground: Drawable? = null
 
     @JvmField
-    var positions: Array<Point?>
+    var positions: Array<Point?> // Массив позиций корабля на игровом поле
 
-    var isHorizontal: Boolean
+    var isHorizontal: Boolean // Ориентация корабля: горизонтальная или вертикальная
         private set
 
-    var isPlaced: Boolean
+    var isPlaced: Boolean // Размещён ли корабль на игровом поле
         private set
 
+    // Инициализация корабля при создании объекта
     init {
-        isHorizontal = HORIZONTAL
-        isPlaced = IS_NOT_PLACED
-        positions = arrayOfNulls(size)
-        Arrays.fill(positions, DEFAULT_POSITION)
+        isHorizontal = HORIZONTAL // Устанавливаем начальную ориентацию - горизонтальную
+        isPlaced = IS_NOT_PLACED // Устанавливаем начальное положение - не размещённый
+        positions = arrayOfNulls(size) // Инициализация массива позиций корабля заданного размера
+        Arrays.fill(positions, DEFAULT_POSITION) // Заполнение массива значениями по умолчанию (неверной позицией)
     }
 
+    // Установка изображения корабля
     fun setDefaultBackground(_defaultBackground: Drawable?) {
         defaultBackground = _defaultBackground
     }
 
+    // Размещение корабля на игровом поле по указанной позиции
     fun placeShip(_position: Point) {
         for (i in 0 until size) {
             positions[i] = Point(_position.x, _position.y + i)
@@ -40,6 +43,7 @@ class Ship(@JvmField val id: Int, @JvmField val size: Int, @JvmField val viewShi
         viewShip.isEnabled = false
     }
 
+    // Удаление корабля с игрового поля
     fun removeShip() {
         for (i in 0 until size) {
             positions[i] = DEFAULT_POSITION
@@ -51,10 +55,13 @@ class Ship(@JvmField val id: Int, @JvmField val size: Int, @JvmField val viewShi
         viewShip.isEnabled = true
     }
 
+    // Установка ориентации корабля (горизонтальной или вертикальной)
+
     fun setOrientation(orientation: Boolean) {
         isHorizontal = orientation
     }
 
+    // Восстановление изображения по умолчанию для представления корабля
     fun setViewShipDefaultBackground() {
         viewShip.background = defaultBackground
     }

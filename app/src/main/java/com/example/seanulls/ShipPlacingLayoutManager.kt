@@ -8,6 +8,9 @@ import android.widget.ImageView
 import com.example.seanulls.managers.AppAssetsManager
 
 object ShipPlacingLayoutManager {
+    /**
+     * Менеджер распределения кораблей на поле для размещения.
+     */
 
     private const val CELLS_COUNT_ON_LINE = 11 //Количество ячеек в одной строке с учетом букв и цифр
     const val CELL_COUNT = 10
@@ -18,6 +21,12 @@ object ShipPlacingLayoutManager {
     var grid: GridLayout? = null //Поле
     var layout: ArrayList<Drawable>? = null
 
+    /**
+     * Создает представление для размещения кораблей.
+     * @param _context Контекст приложения
+     * @param _grid Поле для размещения кораблей
+     * @return Возвращает true, если успешно создано представление для размещения кораблей, в противном случае - false
+     */
     fun createPlaceableView(_context: Context, _grid: GridLayout?): Boolean {
         grid = _grid
 
@@ -40,6 +49,7 @@ object ShipPlacingLayoutManager {
         return false
     }
 
+    //Инициализация сетки
     private fun initializeGrid(): Boolean {
         val params = grid!!.layoutParams
 
@@ -50,6 +60,7 @@ object ShipPlacingLayoutManager {
         return true
     }
 
+    //Создание набора кнопок для поля
     private fun createButtonSet(_gridContext: Context): Boolean {
         buttonField = Array(10) { arrayOfNulls(10) }
 
@@ -70,6 +81,7 @@ object ShipPlacingLayoutManager {
         return true
     }
 
+    //Заполнение сетки кнопками
     private fun fillGridWithButtons(_gridContext: Context): Boolean {
         val gp = GridLayout.LayoutParams()
 
@@ -110,5 +122,9 @@ object ShipPlacingLayoutManager {
         return true
     }
 
+    /**
+     * Получить массив кнопок.
+     * @return Возвращает двумерный массив кнопок
+     */
     fun getButtonFields(): Array<Array<Button?>> = buttonField
 }

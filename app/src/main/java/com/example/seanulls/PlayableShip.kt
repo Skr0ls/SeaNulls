@@ -9,6 +9,11 @@ class PlayableShip(@JvmField val id: Int, @JvmField val size: Int, @JvmField val
         private set
 
 
+    /*
+    Метод увеличивает счетчик разрушенных частей корабля на 1
+    Если количество разрушенных частей равно размеру корабля (size),
+    устанавливает флаг isDestroyed в true, обозначая, что корабль разрушен
+    */
     fun incrementDestroyedParts() {
         countOfDestroyedParts++
         if (countOfDestroyedParts == size) isDestroyed = true

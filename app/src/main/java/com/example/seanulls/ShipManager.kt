@@ -4,7 +4,16 @@ import android.app.Activity
 import android.widget.ImageView
 
 class ShipManager : Activity() {
+    /**
+     * Менеджер кораблей. Управляет созданием и загрузкой кораблей в игре.
+     */
 
+
+    /**
+     * Инициализирует корабли с помощью предоставленных представлений [views].
+     * @param views Представления ImageView, представляющие корабли.
+     * @return true, если корабли успешно инициализированы, иначе false.
+     */
     fun initializeShips(views: ArrayList<ImageView?>): Boolean {
         ships = ArrayList()
         ships!!.add(Ship(10, 1, views[0]!!))
@@ -21,11 +30,17 @@ class ShipManager : Activity() {
     }
 
     companion object {
-        //const val SHIP_COUNT = 10
+
+
+         // Список кораблей
         @JvmStatic
         var ships: ArrayList<Ship>? = null
             private set
 
+        /**
+         * Загружает пакет кораблей [shipPack].
+         * @param shipPack Пакет кораблей для загрузки.
+         */
         fun loadShipPack(shipPack: ArrayList<Ship>?) {
             ships = shipPack
         }

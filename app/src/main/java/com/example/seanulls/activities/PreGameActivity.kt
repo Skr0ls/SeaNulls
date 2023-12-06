@@ -21,7 +21,9 @@ class PreGameActivity : AppCompatActivity() {
         AppActivityManager.setPlacingActivity(this)
         NavigationPanelRemover.remove(this)
 
+        // Создаем игровое поле для размещения кораблей
         if (ShipPlacingLayoutManager.createPlaceableView(this, findViewById<View>(R.id.grid) as GridLayout)) { //Делим пополам и на 12 элементов чтобы был отспут по половине
+            // Получаем список ImageView для размещения кораблей
             val list = ArrayList<ImageView?>()
             list.add(findViewById<View>(R.id.view_ship_11) as ImageView)
             list.add(findViewById<View>(R.id.view_ship_12) as ImageView)
@@ -33,10 +35,13 @@ class PreGameActivity : AppCompatActivity() {
             list.add(findViewById<View>(R.id.view_ship_31) as ImageView)
             list.add(findViewById<View>(R.id.view_ship_32) as ImageView)
             list.add(findViewById<View>(R.id.view_ship_41) as ImageView)
+
+            // Инициализация логики размещения кораблей
             Logic(list)
         }
     }
 
+    // Метод инициализации логики размещения кораблей
     private fun Logic(viewShips: ArrayList<ImageView?>) {
         val logic = ShipPlacingLogic()
         logic.fullInitialization(viewShips, this, findViewById<View>(R.id.textViewPlayer) as TextView, findViewById<View>(R.id.buttonRemove) as Button, findViewById<View>(R.id.buttonRotate) as Button, findViewById<View>(R.id.buttonNext) as Button, findViewById<View>(R.id.buttonBack) as Button,)

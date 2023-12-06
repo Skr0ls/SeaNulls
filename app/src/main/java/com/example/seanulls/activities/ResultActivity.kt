@@ -17,10 +17,13 @@ class ResultActivity : AppCompatActivity() {
 
     private var container: GridLayout? = null
     private var inscription: ArrayList<TextView>? = null
+
     private var inscriptionOne = "Победа первого игрока"
     private var inscriptionTwo = "Победа второго игрока"
+
     private var size_one = 0
     private var size_two = 0
+
     private var winner = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +32,7 @@ class ResultActivity : AppCompatActivity() {
         AppActivityManager.setResultActivity(this)
         NavigationPanelRemover.remove(this)
 
+        // Запуск музыки в фоновом режиме
         startMusic()
 
         container = findViewById<View>(R.id.containerForInscription) as GridLayout
@@ -38,14 +42,16 @@ class ResultActivity : AppCompatActivity() {
         initializeInscription()
 
         val buttonBack: Button = findViewById(R.id.buttonBackToMainMenu)
-
+        // Обработчик нажатия кнопки "Назад в главное меню"
         buttonBack.setOnClickListener{
+            // Завершение активностей, связанных с игрой
             AppActivityManager.getPlacingActivity()?.finish()
             AppActivityManager.getGameActivity()?.finish()
             AppActivityManager.getResultActivity()?.finish()
         }
     }
 
+    // Инициализация текстовой надписи о победе
     private fun initializeInscription() {
         val size: Int
         val str: String
@@ -64,11 +70,14 @@ class ResultActivity : AppCompatActivity() {
         grid.columnCount = size
         for (i in 0 until size) {
             val params = GridLayout.LayoutParams()
+
             params.setMargins(0, 0, 0, 0)
             params.setGravity(Gravity.CENTER)
+
             val symbol = TextView(this)
             symbol.text = str[i].toString()
             symbol.textSize = 24f
+
             val color = getColor(R.color.white)
             symbol.setTextColor(color)
             symbol.layoutParams = params
@@ -78,16 +87,19 @@ class ResultActivity : AppCompatActivity() {
         val params = GridLayout.LayoutParams()
         params.setMargins(0, 0, 0, 0)
         params.setGravity(Gravity.CENTER)
+
         grid.layoutParams = params
         container!!.addView(grid)
     }
 
 
+    // Метод запуска фоновой музыки
     private fun startMusic() {
         val musicIntent = Intent(this, MusicService::class.java)
         startService(musicIntent)
     }
 
+    // Метод остановки фоновой музыки при уничтожении активности
     private fun stopMusic() {
         val musicIntent = Intent(this, MusicService::class.java)
         stopService(musicIntent)

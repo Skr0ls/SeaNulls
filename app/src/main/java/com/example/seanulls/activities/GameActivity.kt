@@ -16,14 +16,20 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
+        // Устанавливаем текущую активность как активность игры
         AppActivityManager.setGameActivity(this)
         NavigationPanelRemover.remove(this)
 
+        // Определение размеров игрового поля
         val width = resources.displayMetrics.widthPixels / 2
         val height = resources.displayMetrics.heightPixels
         val size = if (width  < height) width  else height
+
+        // Инициализация логики игрового процесса
         val logic = GameStepLogic()
         logic.initializeGameField(findViewById<View>(R.id.field_1) as GridLayout, findViewById<View>(R.id.field_2) as GridLayout, size / 13, this)
+
+        // Инициализация таймера игры и текста для ходов игроков
         logic.initializeTimer(
             findViewById<View>(R.id.textViewFirstPlayerStep) as TextView,
             findViewById<View>(R.id.textViewSecondPlayerStep) as TextView,

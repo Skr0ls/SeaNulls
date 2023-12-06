@@ -20,20 +20,27 @@ import com.example.seanulls.managers.AppAssetsManager
 import com.example.seanulls.models.ShipAssetSample
 
 class GameStepLogic {
+    /**
+     * Класс GameStepLogic реализует логику игрового процесса.
+     * Он отвечает за управление ходами игроков, обновление таймера, инициализацию игрового поля и обработку нажатий на кнопки игровых полей.
+     */
+
     private var resultIntent: Intent? = null
 
+    // Массивы кнопок для игровых полей двух игроков
     private lateinit var buttonFieldOne: Array<Array<CustomButton?>>
     private lateinit var buttonFieldTwo: Array<Array<CustomButton?>>
 
+    // Переменные для управления таймером
     private var seconds = 20
     private var timer: Chronometer? = null
 
+    // Текстовые поля для отображения ходов игроков
     private var textFirstPlayerStep: TextView? = null
     private var textSecondPlayerStep: TextView? = null
 
-
+    // Цвет попадания
     private val redСolor = ColorStateList.valueOf(Color.parseColor("#f24e1e"))
-
     private val hitColor: Int = redСolor.getColorForState(intArrayOf(R.color.red), Color.TRANSPARENT)
 
     private fun updateStep() {
@@ -66,6 +73,7 @@ class GameStepLogic {
         }
     }
 
+    // Инициализация таймера и начальных параметров игры
     fun initializeTimer(_textFirstPlayerStep: TextView?, _textSecondPlayerStep: TextView?, _timer: Chronometer?) {
         textFirstPlayerStep = _textFirstPlayerStep
         textSecondPlayerStep = _textSecondPlayerStep
@@ -86,6 +94,7 @@ class GameStepLogic {
         timer!!.start()
     }
 
+    // Инициализация игрового поля
     fun initializeGameField(_fieldOne: GridLayout?, _fieldTwo: GridLayout?, _cellSide: Int, _context: Context?){
         gridFieldOne = _fieldOne
         gridFieldTwo = _fieldTwo
@@ -167,6 +176,7 @@ class GameStepLogic {
         return true
     }
 
+    //Отоброажает разрушения корабля на игровом поле
     fun reflector(ship: PlayableShip, buttonField: Array<Array<CustomButton?>>, field: Array<IntArray>): Boolean {
         val body: Drawable
         val front: Drawable
@@ -180,7 +190,8 @@ class GameStepLogic {
             front = AppAssetsManager.horizontalShipAssets.getFront(ShipAssetSample.shipPartType.destroyed)!!
             lineCount = 3
             columnCount = ship.size + 2
-        } else {
+        }
+        else {
             body = AppAssetsManager.verticalShipAssets.getBody(ShipAssetSample.shipPartType.destroyed)!!
             front = AppAssetsManager.verticalShipAssets.getFront(ShipAssetSample.shipPartType.destroyed)!!
             lineCount = ship.size + 2
@@ -223,6 +234,7 @@ class GameStepLogic {
         }
     }
 
+    // Обработка нажатия на кнопку игрового поля первого игрока
     private val firstFieldListener = View.OnClickListener { v ->
         val button = v as CustomButton
         if (!button.isButtonPressed) {
@@ -263,6 +275,7 @@ class GameStepLogic {
         }
     }
 
+    // Обработка нажатия на кнопку игрового поля второго игрока
     private val secondFieldListener = View.OnClickListener { v ->
         val button = v as CustomButton
         if (!button.isButtonPressed) {

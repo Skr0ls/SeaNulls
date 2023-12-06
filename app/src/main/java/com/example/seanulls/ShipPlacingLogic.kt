@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Point
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -20,6 +19,11 @@ import com.example.seanulls.models.ShipAssetSample
 import com.example.seanulls.models.VerticalShipAssetSample
 
 class ShipPlacingLogic : Activity() {
+
+    /**
+     * Класс, управляющий логикой размещения кораблей на игровой сетке
+     */
+
     private val strChoose = "Необходимо выбрать корабль"
     private val notEnoughSpace = "Недостаточно места"
 
@@ -37,23 +41,26 @@ class ShipPlacingLogic : Activity() {
     private var buttonTurn: Button? = null
     private var buttonNext: Button? = null
     private var buttonBack: Button? = null
-    private var textView_playerNumber: TextView? = null
+    private var textViewPlayerNumber: TextView? = null
 
     private var isFirstPlayer = true
 
     private var verticalShipAssetSample: VerticalShipAssetSample? = null
     private var horizontalShipAssetSample: HorizontalShipAssetSample? = null
 
+    // Метод инициализации всех элементов интерфейса
     fun fullInitialization(_viewShips: ArrayList<ImageView?>, _context: Context, _textView_playerNumber: TextView, btRemove: Button, btTurn: Button, btNext: Button, btBack: Button) {
         initializeButtons(_context, btRemove, btTurn, btNext, btBack)
         initializeTextView(_textView_playerNumber)
         initializeViewShips(_viewShips)
         initializeButtonField()
 
+        // Инициализация образцов изображений для горизонтальных и вертикальных кораблей
         horizontalShipAssetSample = AppAssetsManager.horizontalShipAssets
         verticalShipAssetSample = AppAssetsManager.verticalShipAssets
     }
 
+    // Инициализация изображений кораблей
     private fun initializeViewShips(_viewShips: ArrayList<ImageView?>) {
         viewShips = _viewShips
         manager!!.initializeShips(viewShips!!)
@@ -73,10 +80,12 @@ class ShipPlacingLogic : Activity() {
         }
     }
 
+    // Инициализация надписей
     private fun initializeTextView(_textViewPlayerNumber: TextView) {
-        textView_playerNumber = _textViewPlayerNumber
+        textViewPlayerNumber = _textViewPlayerNumber
     }
 
+    // Инициализация кнопок
     private fun initializeButtons(_context: Context, btRemove: Button, btTurn: Button, btNext: Button, btBack: Button){
         context = _context
         manager = ShipManager()
@@ -93,21 +102,27 @@ class ShipPlacingLogic : Activity() {
         buttonNext!!.isEnabled = false
     }
 
+    // Инициализация кнопок игрового поля
     private fun initializeButtonField() {
         buttonField = ShipPlacingLayoutManager.getButtonFields()
         for (i in 0 until ShipPlacingLayoutManager.CELL_COUNT) for (j in 0 until ShipPlacingLayoutManager.CELL_COUNT) buttonField[i][j]?.setOnClickListener(
             buttonCellListener)
     }
 
+    // Проверяет, имеется достаточно места на игровой сетке для размещения корабля по указанным координатам
     private fun checkAreaForPlacement(line: Int, column: Int): Boolean { //Проверка на поле 12*12, line и column получаются как с поля 10*10
         try {
+            // Проверяем, не выходит ли корабль за пределы игрового поля
             if (column + selectedShipToPlace!!.size > 10) {
                 Toast.makeText(context, notEnoughSpace, Toast.LENGTH_SHORT).show()
                 return false
             }
+            // Создаем область для размещения корабля на игровой сетке
             val lineCount = 3
             val columnCount = selectedShipToPlace!!.size + 2
             val area = Array(lineCount) { IntArray(columnCount) }
+
+            // Проверяем, свободна ли область для размещения корабля на игровой сетке
             for (i in 0 until lineCount) {
                 for (j in 0 until columnCount) {
                     area[i][j] = numberField[line + i][column + j]
@@ -117,6 +132,8 @@ class ShipPlacingLogic : Activity() {
                     }
                 }
             }
+
+            // Если область свободна, размещаем корабль на игровой сетке
             shipPlacer(line, column)
         } catch (e: NullPointerException) {
             Toast.makeText(context, strChoose, Toast.LENGTH_SHORT).show()
@@ -124,12 +141,18 @@ class ShipPlacingLogic : Activity() {
         return true
     }
 
+    // Метод для размещения корабля на игровой сетке по заданным координатам
     private fun shipPlacer(line: Int, column: Int): Boolean {
         try {
+            // Размещение корабля на игровой сетке
             selectedShipToPlace!!.placeShip(Point(line, column))
+
+            // Определение позиций корабля на игровой сетке и установка их в соответствующие клетки поля
             for (j in 0 until selectedShipToPlace!!.size) {
                 numberField[line + 1][column + 1 + j] = selectedShipToPlace!!.id
             }
+
+            // Отображение корабля на игровой сетке
             shipReflector(selectedShipToPlace)
             selectedShipToPlace!!.setViewShipDefaultBackground()
             selectedShipToPlace = null
@@ -139,17 +162,22 @@ class ShipPlacingLogic : Activity() {
         return true
     }
 
-    //Отображает корабль
+    // Отображает размещенный корабль на игровой сетке
     private fun shipReflector(currentShip: Ship?): Boolean {
         val body: Drawable
         val front: Drawable
+
+        // Определяем изображения для тела и носа корабля в зависимости от его ориентации
         if (currentShip!!.isHorizontal) {
             body = horizontalShipAssetSample!!.getBody(ShipAssetSample.shipPartType.common)
             front = horizontalShipAssetSample!!.getFront(ShipAssetSample.shipPartType.common)
-        } else {
+        }
+        else {
             body = verticalShipAssetSample!!.getBody(ShipAssetSample.shipPartType.common)
             front = verticalShipAssetSample!!.getFront(ShipAssetSample.shipPartType.common)
         }
+
+        // Устанавливаем изображения на игровую сетку для каждой части корабля
         for (position in 0 until currentShip.size) {
             buttonField[currentShip.positions[position]!!.x][currentShip.positions[position]!!.y]?.background = body
             if (position + 1 == currentShip.size) buttonField[currentShip.positions[position]!!.x][currentShip.positions[position]!!.y]?.background = front
@@ -157,16 +185,22 @@ class ShipPlacingLogic : Activity() {
         return true
     }
 
+    // Выделяет выбранный корабль на игровой сетке
     private fun shipSelector(currentShipToEdit: Ship?): Boolean {
         val body: Drawable
         val front: Drawable
+
+        // Определяем изображения для выделения тела и носа корабля в зависимости от его ориентации
         if (currentShipToEdit!!.isHorizontal) {
             body = horizontalShipAssetSample!!.getBody(ShipAssetSample.shipPartType.selected)
             front = horizontalShipAssetSample!!.getFront(ShipAssetSample.shipPartType.selected)
-        } else {
+        }
+        else {
             body = verticalShipAssetSample!!.getBody(ShipAssetSample.shipPartType.selected)
             front = verticalShipAssetSample!!.getFront(ShipAssetSample.shipPartType.selected)
         }
+
+        // Устанавливаем изображения на игровую сетку для каждой части выбранного корабля
         for (position in 0 until currentShipToEdit.size) {
             buttonField[currentShipToEdit.positions[position]!!.x][currentShipToEdit.positions[position]!!.y]?.background = body
             if (position + 1 == currentShipToEdit.size) buttonField[currentShipToEdit.positions[position]!!.x][currentShipToEdit.positions[position]!!.y]?.background = front
@@ -174,16 +208,22 @@ class ShipPlacingLogic : Activity() {
         return true
     }
 
+    // Снимает выделение с выбранного корабля на игровой сетке
     private fun shipDeselector(currentShipToEdit: Ship): Boolean {
         val body: Drawable
         val front: Drawable
+
+        // Определяем изображения для корпуса и носа корабля в зависимости от его ориентации
         if (currentShipToEdit.isHorizontal) {
             body = horizontalShipAssetSample!!.getBody(ShipAssetSample.shipPartType.common)
             front = horizontalShipAssetSample!!.getFront(ShipAssetSample.shipPartType.common)
-        } else {
+        }
+        else {
             body = verticalShipAssetSample!!.getBody(ShipAssetSample.shipPartType.common)
             front = verticalShipAssetSample!!.getFront(ShipAssetSample.shipPartType.common)
         }
+
+        // Устанавливаем изображения корпуса и носа на игровую сетку для каждой части корабля
         for (position in 0 until currentShipToEdit.size) {
             buttonField[currentShipToEdit.positions[position]!!.x][currentShipToEdit.positions[position]!!.y]?.background = body
             if (position + 1 == currentShipToEdit.size) buttonField[currentShipToEdit.positions[position]!!.x][currentShipToEdit.positions[position]!!.y]?.background = front
@@ -191,6 +231,7 @@ class ShipPlacingLogic : Activity() {
         return true
     }
 
+    // Удаляет изображение корабля из определенных клеток на игровой сетке
     private fun shipSpriteRemover(): Boolean {
         for (i in 0 until selectedShipToEdit!!.size) {
             buttonField[selectedShipToEdit!!.positions[i]!!.x][selectedShipToEdit!!.positions[i]!!.y]?.background = AppAssetsManager.layoutSprites!![21]
@@ -203,29 +244,38 @@ class ShipPlacingLogic : Activity() {
         return true
     }
 
+    // Удаляет выбранный корабль с игровой сетки и сбрасывает его параметры
     private fun shipRemover(): Boolean {
         buttonRemove!!.isEnabled = false
         buttonTurn!!.isEnabled = false
-        shipNumberRemover()
-        shipSpriteRemover()
-        selectedShipToEdit!!.removeShip()
-        selectedShipToEdit = null
+        shipNumberRemover() // Удаляет численные обозначения корабля с игровой сетки
+        shipSpriteRemover() // Удаляет графическое отображение корабля с игровой сетки
+        selectedShipToEdit!!.removeShip() // Удаляет корабль
+        selectedShipToEdit = null // Сбрасывает выбранный корабль
         return false
     }
 
+    // Поворачивает выбранный корабль на игровой сетке
     private fun shipTurner(): Boolean {
-        if (selectedShipToEdit == null) return false
+        if (selectedShipToEdit == null) return false // Если корабль не выбран, возвращает false
+
+        // Если корабль горизонтально размещен
         if (selectedShipToEdit!!.isHorizontal) {
+            // Проверяет, есть ли достаточно места для поворота корабля
             if (selectedShipToEdit!!.positions[0]!!.x + selectedShipToEdit!!.size > 10) {
                 Toast.makeText(context, notEnoughSpace, Toast.LENGTH_SHORT).show()
                 return false
             }
+
+            // Подготовка области для проверки на возможность поворота корабля
             val line = selectedShipToEdit!!.positions[0]!!.x
             val column = selectedShipToEdit!!.positions[0]!!.y
             val lineCount = selectedShipToEdit!!.size + 2
             val columnCount = 3
             val area = Array(lineCount) { IntArray(columnCount) }
             var countOfNotNullPoints = 0
+
+            // Проверка области на пустоту и подсчет занятых точек
             for (i in 0 until lineCount) {
                 for (j in 0 until columnCount) {
                     if (i == 0) area[i][j] = numberField[line + i][column + j]
@@ -237,14 +287,16 @@ class ShipPlacingLogic : Activity() {
                     if (area[i][j] != 0 && area[i][j] != selectedShipToEdit!!.id) countOfNotNullPoints++
                 }
             }
+            // Если обнаружены занятые точки в области, выводит сообщение об ошибке
             if (countOfNotNullPoints != 0) {
                 Toast.makeText(context, notEnoughSpace, Toast.LENGTH_SHORT).show()
                 return false
             }
+            // Устанавливает новую ориентацию корабля
             selectedShipToEdit!!.setOrientation(Ship.VERTICAL)
-            val poses = arrayOfNulls<Point>(
-                selectedShipToEdit!!.size
-            )
+            val poses = arrayOfNulls<Point>(selectedShipToEdit!!.size)
+
+            // Удаляет старое расположение корабля
             shipSpriteRemover()
             for (i in 0 until selectedShipToEdit!!.size) { //Очищаем старое расположение
                 numberField[selectedShipToEdit!!.positions[i]!!.x + 1][selectedShipToEdit!!.positions[i]!!.y + 1] =
@@ -255,13 +307,18 @@ class ShipPlacingLogic : Activity() {
                 )
                 selectedShipToEdit!!.positions[i] = Ship.DEFAULT_POSITION
             }
+
+            // Устанавливает новое расположение корабля и его значения на игровой сетке
             selectedShipToEdit!!.positions = poses //Указываем новое расположение
             for (i in 0 until selectedShipToEdit!!.size) { //Устанавливаем значения в массив-поле
                 numberField[selectedShipToEdit!!.positions[i]!!.x + 1][selectedShipToEdit!!.positions[i]!!.y + 1] =
                     selectedShipToEdit!!.id
             }
+
+            // Отображает повернутый корабль
             shipSelector(selectedShipToEdit)
-        } else if (!selectedShipToEdit!!.isHorizontal) {
+        }
+        else if (!selectedShipToEdit!!.isHorizontal) {
             if (selectedShipToEdit!!.positions[0]!!.y + selectedShipToEdit!!.size > 10) {
                 Toast.makeText(context, notEnoughSpace, Toast.LENGTH_SHORT).show()
                 return false
@@ -322,16 +379,20 @@ class ShipPlacingLogic : Activity() {
         return true
     }
 
+
+    // Очищает игровое поле и сбрасывает его для новой игры
     private fun layoutCleaner(): Boolean {
+        // Очищает игровое поле и скрывает все корабли на нем
         for (i in 0..11) {
             for (j in 0..11) {
-                numberField[i][j] = 0
+                numberField[i][j] = 0 // Обнуляет каждую ячейку поля
                 if (i < 10 && j < 10) buttonField[i][j]?.background = AppAssetsManager.layoutSprites!![21]
             }
         }
+        // Восстанавливает видимость и доступность кнопок-кораблей
         for (ship in ships!!) {
-            ship.viewShip.visibility = View.VISIBLE
-            ship.viewShip.isEnabled = true
+            ship.viewShip.visibility = View.VISIBLE // Устанавливает видимость корабля
+            ship.viewShip.isEnabled = true // Включает доступность корабля для выбора
         }
         return true
     }
@@ -430,7 +491,7 @@ class ShipPlacingLogic : Activity() {
                 shipReflector(ship)
                 ship.viewShip.visibility = View.INVISIBLE
             }
-            textView_playerNumber!!.text = "Первый игрок"
+            textViewPlayerNumber!!.text = "Первый игрок"
         }
     }
     private val onClickNext = View.OnClickListener {
@@ -442,7 +503,7 @@ class ShipPlacingLogic : Activity() {
             isFirstPlayer = false
             selectedShipToEdit = null
             selectedShipToPlace = null
-            textView_playerNumber!!.text = "Второй игрок"
+            textViewPlayerNumber!!.text = "Второй игрок"
         }
         else {
             ShipPacksStorage.playerTwoShips = ships
