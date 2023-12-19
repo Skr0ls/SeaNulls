@@ -391,20 +391,15 @@ class ShipPlacingLogic : Activity() {
         shipSpriteRemover()
 
         for (i in 0 until selectedShipToEdit!!.size) {
-            numberField[selectedShipToEdit!!.positions[i]!!.x + 1][selectedShipToEdit!!.positions[i]!!.y + 1] =
-                0
-            poses[i] = Point(
-                selectedShipToEdit!!.positions[i]!!.x - i,
-                selectedShipToEdit!!.positions[i]!!.y + i
-            )
+            numberField[selectedShipToEdit!!.positions[i]!!.x + 1][selectedShipToEdit!!.positions[i]!!.y + 1] = 0
+            poses[i] = Point(selectedShipToEdit!!.positions[i]!!.x - i, selectedShipToEdit!!.positions[i]!!.y + i)
             selectedShipToEdit!!.positions[i] = Ship.DEFAULT_POSITION
         }
 
         selectedShipToEdit!!.positions = poses
 
         for (i in 0 until selectedShipToEdit!!.size) {
-            numberField[selectedShipToEdit!!.positions[i]!!.x + 1][selectedShipToEdit!!.positions[i]!!.y + 1] =
-                selectedShipToEdit!!.id
+            numberField[selectedShipToEdit!!.positions[i]!!.x + 1][selectedShipToEdit!!.positions[i]!!.y + 1] = selectedShipToEdit!!.id
         }
 
         val item = selectedShipToPlace
@@ -619,38 +614,57 @@ class ShipPlacingLogic : Activity() {
             setSecondPlayer()
         }
     }
-    private val viewShipListener = View.OnClickListener { view ->
+
+    private fun unselectedShipListener(){
         val unselectedShipOne = horizontalShipAssetSample!!.getOnePartShip(ShipAssetSample.shipType.unselected)
         val unselectedShipTwo = horizontalShipAssetSample!!.getTwoPartShip(ShipAssetSample.shipType.unselected)
         val unselectedShipThree = horizontalShipAssetSample!!.getThreePartShip(ShipAssetSample.shipType.unselected)
         val unselectedShipFour = horizontalShipAssetSample!!.getFourPartShip(ShipAssetSample.shipType.unselected)
 
-        for (ship in ships!!) {
-            if (ships!!.indexOf(ship) <= 3) ship.viewShip.background =
-                unselectedShipOne else if (ships!!.indexOf(ship) <= 6) ship.viewShip.background =
-                unselectedShipTwo else if (ships!!.indexOf(ship) <= 8) ship.viewShip.background =
-                unselectedShipThree else ship.viewShip.background = unselectedShipFour
+        ships?.forEach { ship ->
+            val shipIndex = ships?.indexOf(ship)
+            if(shipIndex != null){
+                when{
+                    shipIndex <= 3 -> ship.viewShip.background = unselectedShipOne
+                    shipIndex <= 6 -> ship.viewShip.background = unselectedShipTwo
+                    shipIndex <= 8 -> ship.viewShip.background = unselectedShipThree
+                    else -> ship.viewShip.background = unselectedShipFour
+                }
+            }
         }
+    }
 
+    private fun selectedShipListener(view: View){
         val selectedShipOne = horizontalShipAssetSample!!.getOnePartShip(ShipAssetSample.shipType.selected)
         val selectedShipTwo = horizontalShipAssetSample!!.getTwoPartShip(ShipAssetSample.shipType.selected)
         val selectedShipThree = horizontalShipAssetSample!!.getThreePartShip(ShipAssetSample.shipType.selected)
         val selectedShipFour = horizontalShipAssetSample!!.getFourPartShip(ShipAssetSample.shipType.selected)
 
-        for (ship in ships!!) {
-            if (view.id == ship.viewShip.id && selectedShipToPlace != ship) {
-                selectedShipToPlace = ship
-                val currentShipIndex = ships!!.indexOf(ship)
-                if (currentShipIndex <= 3) ship.viewShip.background =
-                    selectedShipOne else if (currentShipIndex <= 6) ship.viewShip.background =
-                    selectedShipTwo else if (currentShipIndex <= 8) ship.viewShip.background =
-                    selectedShipThree else ship.viewShip.background = selectedShipFour
-                break
-            }
-            else if (view.id == ship.viewShip.id && selectedShipToPlace == ship) {
-                selectedShipToPlace = null
-                break
+        ships?.forEach { ship ->
+            if(view.id == ship.viewShip.id){
+                when{
+                    selectedShipToPlace != ship ->{
+                        selectedShipToPlace = ship
+                        val currentShipIndex = ships!!.indexOf(ship)
+                        when{
+                            currentShipIndex <= 3 -> ship.viewShip.background = selectedShipOne
+                            currentShipIndex <= 6 -> ship.viewShip.background = selectedShipTwo
+                            currentShipIndex <= 8 -> ship.viewShip.background = selectedShipThree
+                            else -> ship.viewShip.background = selectedShipFour
+                        }
+                        return@forEach
+                    }
+                    selectedShipToPlace == ship ->{
+                        selectedShipToPlace = null
+                        return@forEach
+                    }
+                }
             }
         }
+    }
+
+    private val viewShipListener = View.OnClickListener { view ->
+        unselectedShipListener()
+        selectedShipListener(view)
     }
 }

@@ -288,11 +288,9 @@ class GameStepLogic {
         }
 
         for (position in 0 until ship.size) {
-            buttonField[ship.positions[position]!!.x + 1][ship.positions[position]!!.y + 1]!!.background =
-                body
+            buttonField[ship.positions[position]!!.x + 1][ship.positions[position]!!.y + 1]!!.background = body
             if (position + 1 == ship.size) {
-                buttonField[ship.positions[position]!!.x + 1][ship.positions[position]!!.y + 1]!!.background =
-                    front
+                buttonField[ship.positions[position]!!.x + 1][ship.positions[position]!!.y + 1]!!.background = front
             }
         }
         return true
