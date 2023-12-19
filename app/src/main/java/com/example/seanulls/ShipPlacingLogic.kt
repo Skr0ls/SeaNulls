@@ -292,15 +292,15 @@ class ShipPlacingLogic : Activity() {
 
     private fun canRotateHorizontally(ship: Ship): Boolean{
         // Проверяет, есть ли достаточно места для поворота корабля
-        if (selectedShipToEdit!!.positions[0]!!.x + selectedShipToEdit!!.size > 10) {
+        if (ship!!.positions[0]!!.x + ship!!.size > 10) {
             Toast.makeText(context, notEnoughSpace, Toast.LENGTH_SHORT).show()
             return false
         }
 
         // Подготовка области для проверки на возможность поворота корабля
-        val line = selectedShipToEdit!!.positions[0]!!.x
-        val column = selectedShipToEdit!!.positions[0]!!.y
-        val lineCount = selectedShipToEdit!!.size + 2
+        val line = ship!!.positions[0]!!.x
+        val column = ship!!.positions[0]!!.y
+        val lineCount = ship!!.size + 2
         val columnCount = 3
         val area = Array(lineCount) { IntArray(columnCount) }
         var countOfNotNullPoints = 0
@@ -314,7 +314,7 @@ class ShipPlacingLogic : Activity() {
                 if (i == 3) area[i][j] = numberField[line + i][column + j]
                 if (i == 4) area[i][j] = numberField[line + i][column + j]
                 if (i == 5) area[i][j] = numberField[line + i][column + j]
-                if (area[i][j] != 0 && area[i][j] != selectedShipToEdit!!.id) countOfNotNullPoints++
+                if (area[i][j] != 0 && area[i][j] != ship!!.id) countOfNotNullPoints++
             }
         }
         // Если обнаружены занятые точки в области, выводит сообщение об ошибке
@@ -327,30 +327,29 @@ class ShipPlacingLogic : Activity() {
 
     private fun rotateHorizontally(ship: Ship){
         // Устанавливает новую ориентацию корабля
-        selectedShipToEdit!!.setOrientation(Ship.VERTICAL)
-        val poses = arrayOfNulls<Point>(selectedShipToEdit!!.size)
+        ship!!.setOrientation(Ship.VERTICAL)
+        val poses = arrayOfNulls<Point>(ship!!.size)
 
         // Удаляет старое расположение корабля
         shipSpriteRemover()
-        for (i in 0 until selectedShipToEdit!!.size) { //Очищаем старое расположение
-            numberField[selectedShipToEdit!!.positions[i]!!.x + 1][selectedShipToEdit!!.positions[i]!!.y + 1] =
+        for (i in 0 until ship!!.size) { //Очищаем старое расположение
+            numberField[ship!!.positions[i]!!.x + 1][ship!!.positions[i]!!.y + 1] =
                 0
             poses[i] = Point(
-                selectedShipToEdit!!.positions[i]!!.x + i,
-                selectedShipToEdit!!.positions[i]!!.y - i
+                ship!!.positions[i]!!.x + i,
+                ship!!.positions[i]!!.y - i
             )
-            selectedShipToEdit!!.positions[i] = Ship.DEFAULT_POSITION
+            ship!!.positions[i] = Ship.DEFAULT_POSITION
         }
 
         // Устанавливает новое расположение корабля и его значения на игровой сетке
-        selectedShipToEdit!!.positions = poses //Указываем новое расположение
-        for (i in 0 until selectedShipToEdit!!.size) { //Устанавливаем значения в массив-поле
-            numberField[selectedShipToEdit!!.positions[i]!!.x + 1][selectedShipToEdit!!.positions[i]!!.y + 1] =
-                selectedShipToEdit!!.id
+        ship!!.positions = poses //Указываем новое расположение
+        for (i in 0 until ship!!.size) { //Устанавливаем значения в массив-поле
+            numberField[ship!!.positions[i]!!.x + 1][ship!!.positions[i]!!.y + 1] = ship!!.id
         }
 
         // Отображает повернутый корабль
-        shipSelector(selectedShipToEdit)
+        shipSelector(ship)
     }
 
     private fun canRotateVertically(ship: Ship): Boolean{
@@ -416,130 +415,6 @@ class ShipPlacingLogic : Activity() {
         shipSelector(selectedShipToEdit)
     }
 
-    /*private fun shipTurner(): Boolean {
-        if (selectedShipToEdit == null) return false // Если корабль не выбран, возвращает false
-
-        // Если корабль горизонтально размещен
-        if (selectedShipToEdit!!.isHorizontal) {
-            // Проверяет, есть ли достаточно места для поворота корабля
-            if (selectedShipToEdit!!.positions[0]!!.x + selectedShipToEdit!!.size > 10) {
-                Toast.makeText(context, notEnoughSpace, Toast.LENGTH_SHORT).show()
-                return false
-            }
-
-            // Подготовка области для проверки на возможность поворота корабля
-            val line = selectedShipToEdit!!.positions[0]!!.x
-            val column = selectedShipToEdit!!.positions[0]!!.y
-            val lineCount = selectedShipToEdit!!.size + 2
-            val columnCount = 3
-            val area = Array(lineCount) { IntArray(columnCount) }
-            var countOfNotNullPoints = 0
-
-            // Проверка области на пустоту и подсчет занятых точек
-            for (i in 0 until lineCount) {
-                for (j in 0 until columnCount) {
-                    if (i == 0) area[i][j] = numberField[line + i][column + j]
-                    if (i == 1) area[i][j] = numberField[line + i][column + j]
-                    if (i == 2) area[i][j] = numberField[line + i][column + j]
-                    if (i == 3) area[i][j] = numberField[line + i][column + j]
-                    if (i == 4) area[i][j] = numberField[line + i][column + j]
-                    if (i == 5) area[i][j] = numberField[line + i][column + j]
-                    if (area[i][j] != 0 && area[i][j] != selectedShipToEdit!!.id) countOfNotNullPoints++
-                }
-            }
-            // Если обнаружены занятые точки в области, выводит сообщение об ошибке
-            if (countOfNotNullPoints != 0) {
-                Toast.makeText(context, notEnoughSpace, Toast.LENGTH_SHORT).show()
-                return false
-            }
-            // Устанавливает новую ориентацию корабля
-            selectedShipToEdit!!.setOrientation(Ship.VERTICAL)
-            val poses = arrayOfNulls<Point>(selectedShipToEdit!!.size)
-
-            // Удаляет старое расположение корабля
-            shipSpriteRemover()
-            for (i in 0 until selectedShipToEdit!!.size) { //Очищаем старое расположение
-                numberField[selectedShipToEdit!!.positions[i]!!.x + 1][selectedShipToEdit!!.positions[i]!!.y + 1] =
-                    0
-                poses[i] = Point(
-                    selectedShipToEdit!!.positions[i]!!.x + i,
-                    selectedShipToEdit!!.positions[i]!!.y - i
-                )
-                selectedShipToEdit!!.positions[i] = Ship.DEFAULT_POSITION
-            }
-
-            // Устанавливает новое расположение корабля и его значения на игровой сетке
-            selectedShipToEdit!!.positions = poses //Указываем новое расположение
-            for (i in 0 until selectedShipToEdit!!.size) { //Устанавливаем значения в массив-поле
-                numberField[selectedShipToEdit!!.positions[i]!!.x + 1][selectedShipToEdit!!.positions[i]!!.y + 1] =
-                    selectedShipToEdit!!.id
-            }
-
-            // Отображает повернутый корабль
-            shipSelector(selectedShipToEdit)
-        }
-        else if (!selectedShipToEdit!!.isHorizontal) {
-            if (selectedShipToEdit!!.positions[0]!!.y + selectedShipToEdit!!.size > 10) {
-                Toast.makeText(context, notEnoughSpace, Toast.LENGTH_SHORT).show()
-                return false
-            }
-
-            val line = selectedShipToEdit!!.positions[0]!!.x
-            val column = selectedShipToEdit!!.positions[0]!!.y
-            val lineCount = 3
-            val columnCount = selectedShipToEdit!!.size + 2
-            val area = Array(lineCount) { IntArray(columnCount) }
-            var countOfNotNullPoints = 0
-
-            for (i in 0 until lineCount) {
-                for (j in 0 until columnCount) {
-                    if (i == 0) area[i][j] = numberField[line + i][column + j]
-                    if (i == 1) area[i][j] = numberField[line + i][column + j]
-                    if (i == 2) area[i][j] = numberField[line + i][column + j]
-                    if (area[i][j] != 0 && area[i][j] != selectedShipToEdit!!.id) countOfNotNullPoints++
-                }
-            }
-
-            if (countOfNotNullPoints != 0) {
-                Toast.makeText(context, notEnoughSpace, Toast.LENGTH_SHORT).show()
-                return false
-            }
-
-            selectedShipToEdit!!.setOrientation(Ship.HORIZONTAL)
-            val poses = arrayOfNulls<Point>(
-                selectedShipToEdit!!.size
-            )
-
-            shipSpriteRemover()
-
-            for (i in 0 until selectedShipToEdit!!.size) {
-                numberField[selectedShipToEdit!!.positions[i]!!.x + 1][selectedShipToEdit!!.positions[i]!!.y + 1] =
-                    0
-                poses[i] = Point(
-                    selectedShipToEdit!!.positions[i]!!.x - i,
-                    selectedShipToEdit!!.positions[i]!!.y + i
-                )
-                selectedShipToEdit!!.positions[i] = Ship.DEFAULT_POSITION
-            }
-
-            selectedShipToEdit!!.positions = poses
-
-            for (i in 0 until selectedShipToEdit!!.size) {
-                numberField[selectedShipToEdit!!.positions[i]!!.x + 1][selectedShipToEdit!!.positions[i]!!.y + 1] =
-                    selectedShipToEdit!!.id
-            }
-
-            val item = selectedShipToPlace
-
-            selectedShipToPlace = selectedShipToEdit
-            shipReflector(selectedShipToPlace)
-            selectedShipToPlace = item
-            shipSelector(selectedShipToEdit)
-        }
-        return true
-    }*/
-
-
     // Очищает игровое поле и сбрасывает его для новой игры
     private fun layoutCleaner(): Boolean {
         // Очищает игровое поле и скрывает все корабли на нем
@@ -550,16 +425,84 @@ class ShipPlacingLogic : Activity() {
             }
         }
         // Восстанавливает видимость и доступность кнопок-кораблей
-        for (ship in ships!!) {
-            ship.viewShip.visibility = View.VISIBLE // Устанавливает видимость корабля
-            ship.viewShip.isEnabled = true // Включает доступность корабля для выбора
+        ships?.forEach { ship ->
+            ship.viewShip.apply {
+                visibility = View.VISIBLE
+                isEnabled = true
+            }
         }
         return true
     }
 
+    private fun isCellOccupied(i: Int, j: Int): Boolean{
+        ships?.forEach{ship ->
+            ship.positions.forEach { position ->
+                if(position == Point(i, j)) return true
+            }
+        }
+        return false
+    }
 
+    private fun handleOccupiedCellWithoutSelectedShip(i: Int, j: Int){
+        ships?.forEach { ship ->
+            for(n in 0 until ship.size){
+                if(ship.positions[n] == Point(i, j)){
+                    selectedShipToEdit = ship
+                    buttonRemove!!.isEnabled = true
+                    buttonTurn!!.isEnabled = true
+                    shipSelector(selectedShipToEdit)
+                    return
+                }
+            }
+        }
+    }
+
+    private fun handleOccupiedCellWithSelectedShip(i: Int, j: Int, v: View){
+        var reselect = 0
+
+        for(n in 0 until selectedShipToEdit!!.size){
+            if(v.id == selectedShipToEdit!!.positions[n]!!.x * 10 + selectedShipToEdit!!.positions[n]!!.y){
+                shipDeselector(selectedShipToEdit!!)
+                selectedShipToEdit = null
+                buttonRemove!!.isEnabled = false
+                buttonTurn!!.isEnabled = false
+                return
+            }
+            else{
+                reselect++
+                if(reselect == selectedShipToEdit!!.size){
+                    shipDeselector(selectedShipToEdit!!)
+                    ships?.forEach{ship ->
+                        for(m in 0 until ship.size){
+                            if(v.id == ship.positions[m]!!.x * 10 + ship.positions[m]!!.y){
+                                selectedShipToEdit = ship
+                                shipSelector(selectedShipToEdit)
+                                return
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     private val buttonCellListener = View.OnClickListener { v ->
+        val i = v.id.toString().toInt() / 10
+        val j = v.id.toString().toInt() % 10
+
+        val isOccupied = isCellOccupied(i, j)
+
+        when {
+            !isOccupied && selectedShipToPlace != null -> checkAreaForPlacement(i, j)
+            !isOccupied && selectedShipToPlace == null -> Toast.makeText(context, strChoose, Toast.LENGTH_SHORT).show()
+            isOccupied && selectedShipToEdit == null -> handleOccupiedCellWithoutSelectedShip(i, j)
+            isOccupied && selectedShipToEdit != null -> handleOccupiedCellWithSelectedShip(i, j, v)
+        }
+
+        buttonNext?.isEnabled = ships?.count { it.isPlaced } == 10
+    }
+
+    /*private val buttonCellListener = View.OnClickListener { v ->
         var isOccupied = false
         val i = v.id.toString().toInt() / 10
         val j = v.id.toString().toInt() % 10
@@ -624,7 +567,7 @@ class ShipPlacingLogic : Activity() {
         }
 
         if (countOfPlacedShips == 10) buttonNext!!.isEnabled = true else buttonNext!!.isEnabled = false
-    }
+    }*/
 
     private val onClickRemove = View.OnClickListener {
         shipRemover()
@@ -634,15 +577,16 @@ class ShipPlacingLogic : Activity() {
     private val onClickTurn = View.OnClickListener { shipTurner() }
 
     private val onClickBack = View.OnClickListener {
-        if (isFirstPlayer) AppActivityManager.getPlacingActivity()?.finish()
-        else if (!isFirstPlayer) {
+        if (isFirstPlayer) {
+            AppActivityManager.getPlacingActivity()?.finish()
+        } else {
             layoutCleaner()
             buttonNext!!.isEnabled = true
             isFirstPlayer = true
             selectedShipToEdit = null
             selectedShipToPlace = null
             ShipManager.loadShipPack(ShipPacksStorage.playerOneShips)
-            val ships = ships
+
             for (ship in ships!!) {
                 val positions = ship.positions
                 for (pos in positions) numberField[pos!!.x + 1][pos.y + 1] = ship.id
@@ -652,6 +596,14 @@ class ShipPlacingLogic : Activity() {
             textViewPlayerNumber!!.text = "Первый игрок"
         }
     }
+
+    private fun setSecondPlayer() {
+        ShipPacksStorage.playerTwoShips = ships
+        val intent = Intent(context, GameActivity::class.java)
+        context?.startActivity(intent)
+        AppActivityManager.getPlacingActivity()?.finish()
+    }
+
     private val onClickNext = View.OnClickListener {
         if (isFirstPlayer) {
             ShipPacksStorage.playerOneShips = ships
@@ -664,10 +616,7 @@ class ShipPlacingLogic : Activity() {
             textViewPlayerNumber!!.text = "Второй игрок"
         }
         else {
-            ShipPacksStorage.playerTwoShips = ships
-            val intent = Intent(context, GameActivity::class.java)
-            context!!.startActivity(intent)
-            AppActivityManager.getPlacingActivity()?.finish()
+            setSecondPlayer()
         }
     }
     private val viewShipListener = View.OnClickListener { view ->

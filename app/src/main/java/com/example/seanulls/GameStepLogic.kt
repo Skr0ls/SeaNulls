@@ -3,8 +3,11 @@ package com.example.seanulls
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.RippleDrawable
 import android.os.SystemClock
+import android.util.Log
 import android.view.View
 import android.widget.Chronometer
 import android.widget.Chronometer.OnChronometerTickListener
@@ -302,32 +305,59 @@ class GameStepLogic {
     }
 
     private fun allButtonsMatchCriteria(): Boolean {
-        for (i in 1 until fieldOne.size - 1) {
-            for (j in 1 until fieldOne[i].size - 1) {
-                val buttonOne = buttonFieldOne[i][j]
-                val buttonTwo = buttonFieldTwo[i][j]
-                //Проверяем ассеты кнопки
-                if (!checkAssets(buttonOne!!)) return false
+        val allButtonsOneFilled = buttonFieldOne.flatten().all { button -> checkButtonAssets(button) }
+        val allButtonsTwoFilled = buttonFieldTwo.flatten().all { button -> checkButtonAssets(button) }
 
-                if(!checkAssets(buttonTwo!!)) return false
+        return allButtonsOneFilled || allButtonsTwoFilled
+    }
+
+    private fun checkButtonAssets(button: CustomButton?): Boolean {
+        button ?: return false
+
+        val buttonBackground = button.background ?: return false
+
+        return when {
+            isDefaultBackground(buttonBackground) -> {
+                Log.d("CheckAssets", "Button has a standard background")
+                false
+            }
+            isDestroyedShipPart(buttonBackground) ||
+                    isHitColor(buttonBackground) ||
+                    isBackgroundAtIndex22(buttonBackground) || isRippleDrawable(buttonBackground) -> true
+            else -> {
+                Log.d("CheckAssets", "Button failed criteria check: $buttonBackground $button")
+                false
             }
         }
-        return true
     }
 
-    //Метод для проверки ассетов кнопки
-    private fun checkAssets(button: CustomButton): Boolean{
-        val buttonBackground = button.background
-
-        return buttonBackground?.let {
-            it.equals(AppAssetsManager.horizontalShipAssets.getBody(ShipAssetSample.shipPartType.destroyed)) ||
-                    it.equals(AppAssetsManager.horizontalShipAssets.getFront(ShipAssetSample.shipPartType.destroyed)) ||
-                    it.equals(AppAssetsManager.verticalShipAssets.getBody(ShipAssetSample.shipPartType.destroyed)) ||
-                    it.equals(AppAssetsManager.verticalShipAssets.getFront(ShipAssetSample.shipPartType.destroyed)) ||
-                    it.equals(hitColor) ||
-                    it.equals(layout[22])
-        } ?: false
+    private fun isDestroyedShipPart(drawable: Drawable): Boolean {
+        return drawable == AppAssetsManager.horizontalShipAssets.getBody(ShipAssetSample.shipPartType.destroyed) ||
+                drawable == AppAssetsManager.horizontalShipAssets.getFront(ShipAssetSample.shipPartType.destroyed) ||
+                drawable == AppAssetsManager.verticalShipAssets.getBody(ShipAssetSample.shipPartType.destroyed) ||
+                drawable == AppAssetsManager.verticalShipAssets.getFront(ShipAssetSample.shipPartType.destroyed)
     }
+
+    private fun isHitColor(drawable: Drawable): Boolean {
+        if (drawable is ColorDrawable) {
+            val color = drawable.color
+            return color == Color.RED // Проверяем, является ли цвет красным
+        }
+        return false
+    }
+
+    private fun isBackgroundAtIndex22(drawable: Drawable): Boolean {
+        return drawable == layout[22]
+    }
+
+    private fun isDefaultBackground(drawable: Drawable): Boolean{
+        return drawable == layout[21]
+    }
+
+    private fun isRippleDrawable(drawable: Drawable): Boolean {
+        return drawable is RippleDrawable
+    }
+
 
     private fun handleButtonClick(isFirstPlayer: Boolean, x: Int, y :Int) {
         val buttonField = if (isFirstPlayer) buttonFieldOne else buttonFieldTwo
@@ -366,6 +396,7 @@ class GameStepLogic {
                         if (ship.isDestroyed) n++
                     }
 
+                    Log.d("Clicks", "$n")
                     if (n == 10) handleGameEnd(if (isFirstPlayer) 2 else 1)
                 }
 
@@ -375,8 +406,10 @@ class GameStepLogic {
                     field[x + 1][y + 1] = -1
                     changeStep()
 
-                    if (allButtonsMatchCriteria()) handleGameEnd(if (isFirstPlayer) 2 else 1)
+                    Log.d("Clicks", "${currentButton.x}: ${currentButton.y}")
                 }
+
+                if (allButtonsMatchCriteria()) handleGameEnd(if (isFirstPlayer) 2 else 1)
             }
         }
     }
