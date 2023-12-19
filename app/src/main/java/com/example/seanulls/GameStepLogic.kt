@@ -64,29 +64,24 @@ class GameStepLogic {
 
     private fun changeStep() {
         seconds = 15
-
         isFirstPlayerStep = !isFirstPlayerStep
+        setGridFieldsEnabled(isFirstPlayerStep)
+    }
 
-        if (isFirstPlayerStep) {
-            for (i in 0 until gridFieldOne!!.childCount) {
-                gridFieldOne!!.getChildAt(i).isEnabled = false
-                gridFieldTwo!!.getChildAt(i).isEnabled = true
-            }
-            textFirstPlayerStep!!.visibility = View.VISIBLE
-            textSecondPlayerStep!!.visibility = View.INVISIBLE
-        }
-        else {
-            for (i in 0 until gridFieldOne!!.childCount) {
-                gridFieldOne!!.getChildAt(i).isEnabled = true
-                gridFieldTwo!!.getChildAt(i).isEnabled = false
-            }
+    private fun setGridFieldsEnabled(isFirstPlayerStep: Boolean){
+        textFirstPlayerStep?.visibility = if (isFirstPlayerStep) View.VISIBLE else View.INVISIBLE
+        textSecondPlayerStep?.visibility = if (isFirstPlayerStep) View.INVISIBLE else View.VISIBLE
 
-            textFirstPlayerStep!!.visibility = View.INVISIBLE
-            textSecondPlayerStep!!.visibility = View.VISIBLE
+        val fieldOneEnabled = !isFirstPlayerStep
+        val fieldTwoEnabled = isFirstPlayerStep
+
+        for (i in 0 until gridFieldOne!!.childCount) {
+            gridFieldOne!!.getChildAt(i).isEnabled = fieldOneEnabled
+            gridFieldTwo!!.getChildAt(i).isEnabled = fieldTwoEnabled
         }
     }
 
-    // Инициализация таймера и начальных параметров игры
+    //Инициализация таймера и начальных параметров игры
     fun initializeTimer(_textFirstPlayerStep: TextView?, _textSecondPlayerStep: TextView?, _timer: Chronometer?) {
         textFirstPlayerStep = _textFirstPlayerStep
         textSecondPlayerStep = _textSecondPlayerStep
@@ -108,41 +103,14 @@ class GameStepLogic {
     }
 
     // Инициализация игрового поля
-    /*fun initializeGameField(_fieldOne: GridLayout?, _fieldTwo: GridLayout?, _cellSide: Int, _context: Context?){
-        gridFieldOne = _fieldOne
-        gridFieldTwo = _fieldTwo
-        cellSide = _cellSide
-        context = _context
-
-        buttonFieldOne = Array(12) { arrayOfNulls(12) }
-        buttonFieldTwo = Array(12) { arrayOfNulls(12) }
-
-        layout = AppAssetsManager.layoutSprites
-
-        initializeField(1, gridFieldOne, buttonFieldOne)
-        initializeField(2, gridFieldTwo, buttonFieldTwo)
-
-        shipsOne = convert(ShipPacksStorage.playerOneShips!!)
-        shipsTwo = convert(ShipPacksStorage.playerTwoShips!!)
-
-        for (ship in shipsOne!!) {
-            for (pos in ship.positions) {
-                fieldOne[pos!!.x + 1][pos.y + 1] = ship.id
-            }
-        }
-
-        for (ship in shipsTwo!!) {
-            for (pos in ship.positions) {
-                fieldTwo[pos!!.x + 1][pos.y + 1] = ship.id
-            }
-        }
-    }*/
-
     fun initializeGameField(_fieldOne: GridLayout?, _fieldTwo: GridLayout?, _cellSide: Int, _context: Context?){
+        //Установка переменных для поля и кнопок
         setupFieldsAndButtons(_fieldOne, _fieldTwo, _cellSide, _context)
 
+        //Инициализация полей игры
         initializeGameFields()
 
+        //Конвертация кораблей и установка их позиций на полях
         convertAndSetShips()
     }
 
@@ -181,20 +149,20 @@ class GameStepLogic {
     }
 
     private fun initializeField(player: Int, field: GridLayout?, buttonField: Array<Array<CustomButton?>>): Boolean{
-        // Этап 1: Инициализация переменных и настройка размеров поля
+        //Инициализация переменных и настройка размеров поля
         initializeButtonField(buttonField)
         setupFieldSize(field)
 
         val nullSpace = createNullSpace()
         field?.addView(nullSpace)
 
-        // Этап 2: Добавление элементов в GridLayout
+        //Добавление элементов в GridLayout
         addSymbolsToGridLayout(field)
 
-        // Этап 3: Добавление кнопок и элементов для обоих игроков
+        //Добавление кнопок и элементов для двух игроков
         addButtonsAndSymbolsForPlayers(player, field, buttonField)
 
-        // Возвращается значение true в конце метода
+
         return true
     }
 
@@ -286,74 +254,6 @@ class GameStepLogic {
         }
     }
 
-
-    /*private fun initializeField(player: Int, field: GridLayout?, buttonField: Array<Array<CustomButton?>>): Boolean {
-        for (i in 0..11)
-            for (j in 0..11) buttonField[i][j] = CustomButton(context!!)
-        field!!.rowCount = 11
-        field.columnCount = 11
-
-        val nullSpace = ImageView(context)
-        val params = GridLayout.LayoutParams()
-
-        params.width = cellSide
-        params.height = cellSide
-        params.setMargins(0, 0, 0, 0)
-
-        nullSpace.layoutParams = params
-        nullSpace.background = AppAssetsManager.layoutSprites!![0]
-
-        field.addView(nullSpace)
-        for (i in 0..9) {
-            val symbol = ImageView(context)
-            val topParams = GridLayout.LayoutParams()
-
-            topParams.width = cellSide
-            topParams.height = cellSide
-            topParams.setMargins(0, 0, 0, 0)
-
-            symbol.background = layout!![i + 1]
-            symbol.layoutParams = topParams
-
-            field.addView(symbol)
-        }
-
-        for (i in 0..9) {
-            val symbol = ImageView(context)
-            val leftParams = GridLayout.LayoutParams()
-
-            leftParams.width = cellSide
-            leftParams.height = cellSide
-            leftParams.setMargins(0, 0, 0, 0)
-
-            symbol.background = layout!![i + 10 + 1]
-            symbol.layoutParams = leftParams
-
-            field.addView(symbol)
-            buttonField[i][0] = CustomButton(context!!)
-
-            for (j in 0..9) {
-                buttonField[i + 1][j + 1] = CustomButton(context!!)
-                val gridParams = GridLayout.LayoutParams()
-
-                gridParams.width = cellSide
-                gridParams.height = cellSide
-                gridParams.setMargins(0, 0, 0, 0)
-
-                buttonField[i + 1][j + 1]!!.id = 100 * player + i * 10 + j
-                buttonField[i + 1][j + 1]!!.layoutParams = gridParams
-                buttonField[i + 1][j + 1]!!.background = layout!![21]
-
-                if (player == 1) buttonField[i + 1][j + 1]!!
-                    .setOnClickListener(firstFieldListener) else if (player == 2) buttonField[i + 1][j + 1]!!
-                    .setOnClickListener(secondFieldListener)
-                field.addView(buttonField[i + 1][j + 1])
-            }
-            buttonField[i][11] = CustomButton(context!!)
-        }
-        return true
-    }*/
-
     //Отоброажает разрушения корабля на игровом поле
     fun reflector(ship: PlayableShip, buttonField: Array<Array<CustomButton?>>, field: Array<IntArray>): Boolean {
         val body: Drawable
@@ -433,7 +333,6 @@ class GameStepLogic {
         val buttonField = if (isFirstPlayer) buttonFieldOne else buttonFieldTwo
         val field = if (isFirstPlayer) fieldOne else fieldTwo
         val ships = if (isFirstPlayer) shipsOne else shipsTwo
-        val textPlayerStep = if (isFirstPlayer) textFirstPlayerStep else textSecondPlayerStep
 
         val currentButton = buttonField[x + 1][y + 1]
 
