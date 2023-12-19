@@ -9,6 +9,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.seanulls.R
 
 class SplashActivity : AppCompatActivity() {
+
+    companion object {
+        private const val SPLASH_DISPLAY_LENGTH = 1500L
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
@@ -22,9 +27,5 @@ class SplashActivity : AppCompatActivity() {
                 finish()
             }, SPLASH_DISPLAY_LENGTH)
         }
-    }
-
-    companion object {
-        private const val SPLASH_DISPLAY_LENGTH = 1500L
     }
 }

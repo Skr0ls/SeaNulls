@@ -8,6 +8,17 @@ import java.util.Arrays
 
 class Ship(@JvmField val id: Int, @JvmField val size: Int, @JvmField val viewShip: ImageView) {
 
+    companion object {
+        const val HORIZONTAL = true
+        const val VERTICAL = false
+
+        private const val IS_PLACED = true
+        private const val IS_NOT_PLACED = false
+
+        @JvmField
+        val DEFAULT_POSITION = Point(-1, -1)
+    }
+
     private var defaultBackground: Drawable? = null
 
     @JvmField
@@ -64,16 +75,5 @@ class Ship(@JvmField val id: Int, @JvmField val size: Int, @JvmField val viewShi
     // Восстановление изображения по умолчанию для представления корабля
     fun setViewShipDefaultBackground() {
         viewShip.background = defaultBackground
-    }
-
-    companion object {
-        const val HORIZONTAL = true
-        const val VERTICAL = false
-
-        private const val IS_PLACED = true
-        private const val IS_NOT_PLACED = false
-
-        @JvmField
-        val DEFAULT_POSITION = Point(-1, -1)
     }
 }

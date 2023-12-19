@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.SystemClock
 import android.util.Log
@@ -32,25 +33,40 @@ class GameStepLogic {
     private lateinit var buttonFieldTwo: Array<Array<CustomButton?>>
 
     // Переменные для управления таймером
-    private var seconds = 20
+    private var seconds = 15
     private var timer: Chronometer? = null
 
     // Текстовые поля для отображения ходов игроков
     private var textFirstPlayerStep: TextView? = null
     private var textSecondPlayerStep: TextView? = null
 
-    // Цвет попадания
-    private val redСolor = ColorStateList.valueOf(Color.parseColor("#f24e1e"))
-    private val hitColor: Int = redСolor.getColorForState(intArrayOf(R.color.red), Color.TRANSPARENT)
+    private val hitColor = Color.RED
+
+    companion object {
+        private var gridFieldOne: GridLayout? = null
+        private var gridFieldTwo: GridLayout? = null
+
+        private var shipsOne: ArrayList<PlayableShip>? = null
+        private var shipsTwo: ArrayList<PlayableShip>? = null
+
+        private val fieldOne = Array(12) { IntArray(12) }
+        private val fieldTwo = Array(12) { IntArray(12) }
+
+        private var cellSide = 0
+        private var context: Context? = null
+
+        var isFirstPlayerStep = true
+        var layout: ArrayList<Drawable> = ArrayList()
+    }
 
     private fun updateStep() {
         timer!!.stop()
-        seconds = 20
+        seconds = 15
         timer!!.start()
     }
 
     private fun changeStep() {
-        seconds = 20
+        seconds = 15
 
         isFirstPlayerStep = !isFirstPlayerStep
 
@@ -129,13 +145,17 @@ class GameStepLogic {
         for (i in 0..11) for (j in 0..11) buttonField[i][j] = CustomButton(context!!)
         field!!.rowCount = 11
         field.columnCount = 11
+
         val nullSpace = ImageView(context)
         val params = GridLayout.LayoutParams()
+
         params.width = cellSide
         params.height = cellSide
         params.setMargins(0, 0, 0, 0)
+
         nullSpace.layoutParams = params
         nullSpace.background = AppAssetsManager.layoutSprites!![0]
+
         field.addView(nullSpace)
         for (i in 0..9) {
             val symbol = ImageView(context)
@@ -147,25 +167,33 @@ class GameStepLogic {
             symbol.layoutParams = topParams
             field.addView(symbol)
         }
+
         for (i in 0..9) {
             val symbol = ImageView(context)
             val leftParams = GridLayout.LayoutParams()
+
             leftParams.width = cellSide
             leftParams.height = cellSide
             leftParams.setMargins(0, 0, 0, 0)
+
             symbol.background = layout!![i + 10 + 1]
             symbol.layoutParams = leftParams
+
             field.addView(symbol)
             buttonField[i][0] = CustomButton(context!!)
+
             for (j in 0..9) {
                 buttonField[i + 1][j + 1] = CustomButton(context!!)
                 val gridParams = GridLayout.LayoutParams()
+
                 gridParams.width = cellSide
                 gridParams.height = cellSide
                 gridParams.setMargins(0, 0, 0, 0)
+
                 buttonField[i + 1][j + 1]!!.id = 100 * player + i * 10 + j
                 buttonField[i + 1][j + 1]!!.layoutParams = gridParams
                 buttonField[i + 1][j + 1]!!.background = layout!![21]
+
                 if (player == 1) buttonField[i + 1][j + 1]!!
                     .setOnClickListener(firstFieldListener) else if (player == 2) buttonField[i + 1][j + 1]!!
                     .setOnClickListener(secondFieldListener)
@@ -217,6 +245,38 @@ class GameStepLogic {
         return true
     }
 
+    private fun handleGameEnd(winner: Int){
+        resultIntent = Intent(context, ResultActivity::class.java).putExtra("winner", winner)
+        context!!.startActivity(resultIntent)
+        AppActivityManager.getGameActivity()?.finish()
+    }
+
+    private fun allButtonsMatchCriteria(): Boolean {
+        for (i in 1 until fieldOne.size - 1) {
+            for (j in 1 until fieldOne[i].size - 1) {
+                val button = buttonFieldOne[i][j]
+                val buttonBackgroundColor = (button?.background as? ColorDrawable)?.color ?: Color.TRANSPARENT
+
+                // Проверяем соответствие цвета фона или других ассетов, включая убитые корабли
+                if (buttonBackgroundColor != hitColor && button?.background != layout[22] && !checkAssets(button!!)) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    private fun checkAssets(button: CustomButton): Boolean{
+        val buttonBackground = button.background
+
+        return buttonBackground?.let {
+            it.equals(AppAssetsManager.horizontalShipAssets.getBody(ShipAssetSample.shipPartType.destroyed)) ||
+                    it.equals(AppAssetsManager.horizontalShipAssets.getFront(ShipAssetSample.shipPartType.destroyed)) ||
+                    it.equals(AppAssetsManager.verticalShipAssets.getBody(ShipAssetSample.shipPartType.destroyed)) ||
+                    it.equals(AppAssetsManager.verticalShipAssets.getFront(ShipAssetSample.shipPartType.destroyed))
+        } ?: false
+    }
+
     private val onTickListener = OnChronometerTickListener { chronometer ->
         chronometer.text = "" + --seconds
         if (seconds == 0) {
@@ -237,40 +297,45 @@ class GameStepLogic {
     // Обработка нажатия на кнопку игрового поля первого игрока
     private val firstFieldListener = View.OnClickListener { v ->
         val button = v as CustomButton
+
         if (!button.isButtonPressed) {
             val x = v.getId().toString()[1].code - 48
             val y = v.getId().toString()[2].code - 48
             var currentShip: PlayableShip? = null
+
             for (ship in shipsOne!!) {
                 if (ship.id == fieldOne[x + 1][y + 1]) {
                     currentShip = ship
                     break
                 }
             }
+
             if (currentShip != null) {
                 button.setPressedStatus()
                 button.setBackgroundColor(hitColor)
                 currentShip.incrementDestroyedParts()
                 fieldOne[x + 1][y + 1] = -1
+
                 if (currentShip.isDestroyed) {
                     reflector(currentShip, buttonFieldOne, fieldOne)
                 }
                 updateStep()
+
                 var n = 0
                 for (ship in shipsOne!!) {
                     if (ship.isDestroyed) n++
                 }
-                if (n == 10) {
-                    resultIntent = Intent(context, ResultActivity::class.java).putExtra("winner", 2)
-                    context!!.startActivity(resultIntent)
-                    AppActivityManager.getGameActivity()?.finish()
-                }
+
+                if (n == 10) handleGameEnd(2)
             }
+
             if (currentShip == null) {
                 button.setPressedStatus()
                 button.background = layout!![22]
                 fieldOne[x + 1][y + 1] = -1
                 changeStep()
+
+                if(allButtonsMatchCriteria()) handleGameEnd(2)
             }
         }
     }
@@ -278,10 +343,12 @@ class GameStepLogic {
     // Обработка нажатия на кнопку игрового поля второго игрока
     private val secondFieldListener = View.OnClickListener { v ->
         val button = v as CustomButton
+
         if (!button.isButtonPressed) {
             val x = v.getId().toString()[1].code - 48
             val y = v.getId().toString()[2].code - 48
             var currentShip: PlayableShip? = null
+
             for (ship in shipsTwo!!) {
                 if (ship.id == fieldTwo[x + 1][y + 1]) {
                     currentShip = ship
@@ -290,51 +357,31 @@ class GameStepLogic {
             }
             if (currentShip != null) {
                 button.setPressedStatus()
-                button.setBackgroundColor(Color.RED)
+                button.setBackgroundColor(hitColor)
                 currentShip.incrementDestroyedParts()
                 fieldTwo[x + 1][y + 1] = -1
+
                 if (currentShip.isDestroyed) {
                     reflector(currentShip, buttonFieldTwo, fieldTwo)
                 }
                 updateStep()
+
                 var n = 0
                 for (ship in shipsTwo!!) {
                     if (ship.isDestroyed) n++
                 }
-                if (n == 10) {
-                    context!!.startActivity(
-                        Intent(
-                            context,
-                            ResultActivity::class.java
-                        ).putExtra("winner", 1)
-                    )
-                    AppActivityManager.getGameActivity()?.finish()
-                }
+
+                if (n == 10) handleGameEnd(1)
             }
+
             if (currentShip == null) {
                 button.setPressedStatus()
                 button.background = layout!![22]
                 fieldTwo[x + 1][y + 1] = -1
                 changeStep()
+
+                if(allButtonsMatchCriteria()) handleGameEnd(1)
             }
         }
-    }
-
-
-    companion object {
-        private var gridFieldOne: GridLayout? = null
-        private var gridFieldTwo: GridLayout? = null
-
-        private var shipsOne: ArrayList<PlayableShip>? = null
-        private var shipsTwo: ArrayList<PlayableShip>? = null
-
-        private val fieldOne = Array(12) { IntArray(12) }
-        private val fieldTwo = Array(12) { IntArray(12) }
-
-        private var cellSide = 0
-        private var context: Context? = null
-
-        var isFirstPlayerStep = true
-        var layout: ArrayList<Drawable> = ArrayList()
     }
 }

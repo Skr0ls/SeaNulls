@@ -48,6 +48,10 @@ class ShipPlacingLogic : Activity() {
     private var verticalShipAssetSample: VerticalShipAssetSample? = null
     private var horizontalShipAssetSample: HorizontalShipAssetSample? = null
 
+    companion object {
+        private var context: Context? = null
+    }
+
     // Метод инициализации всех элементов интерфейса
     fun fullInitialization(_viewShips: ArrayList<ImageView?>, _context: Context, _textView_playerNumber: TextView, btRemove: Button, btTurn: Button, btNext: Button, btBack: Button) {
         initializeButtons(_context, btRemove, btTurn, btNext, btBack)
@@ -400,22 +404,22 @@ class ShipPlacingLogic : Activity() {
 
 
     private val buttonCellListener = View.OnClickListener { v ->
-        var isBusy = false
+        var isOccupied = false
         val i = v.id.toString().toInt() / 10
         val j = v.id.toString().toInt() % 10
         var reselect = 0
         for (ship in ships!!) {
             for (position in ship.positions) {
-                if (position == Point(i, j)) isBusy = true
+                if (position == Point(i, j)) isOccupied = true
             }
         }
-        if (!isBusy && selectedShipToPlace != null) {
+        if (!isOccupied && selectedShipToPlace != null) {
             checkAreaForPlacement(i, j)
         }
-        else if (!isBusy && selectedShipToPlace == null) {
+        else if (!isOccupied && selectedShipToPlace == null) {
             Toast.makeText(context, strChoose, Toast.LENGTH_SHORT).show()
         }
-        else if (isBusy && selectedShipToEdit == null) {
+        else if (isOccupied && selectedShipToEdit == null) {
             for (ship in ships!!) {
                 for (n in 0 until ship.size) {
                     if (ship.positions[n] == Point(i, j)) {
@@ -428,7 +432,7 @@ class ShipPlacingLogic : Activity() {
                 }
             }
         }
-        else if (isBusy && selectedShipToEdit != null) {
+        else if (isOccupied && selectedShipToEdit != null) {
             for (n in 0 until selectedShipToEdit!!.size) {
                 if (v.id == selectedShipToEdit!!.positions[n]!!.x * 10 + selectedShipToEdit!!.positions[n]!!.y) {
                     shipDeselector(selectedShipToEdit!!)
@@ -474,9 +478,7 @@ class ShipPlacingLogic : Activity() {
     private val onClickTurn = View.OnClickListener { shipTurner() }
 
     private val onClickBack = View.OnClickListener {
-        if (isFirstPlayer) {
-            AppActivityManager.getPlacingActivity()?.finish()
-        }
+        if (isFirstPlayer) AppActivityManager.getPlacingActivity()?.finish()
         else if (!isFirstPlayer) {
             layoutCleaner()
             buttonNext!!.isEnabled = true
@@ -545,9 +547,5 @@ class ShipPlacingLogic : Activity() {
                 break
             }
         }
-    }
-
-    companion object {
-        private var context: Context? = null
     }
 }

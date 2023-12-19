@@ -14,6 +14,22 @@ class ShipManager : Activity() {
      * @param views Представления ImageView, представляющие корабли.
      * @return true, если корабли успешно инициализированы, иначе false.
      */
+
+    companion object {
+        // Список кораблей
+        @JvmStatic
+        var ships: ArrayList<Ship>? = null
+            private set
+
+        /**
+         * Загружает пакет кораблей [shipPack].
+         * @param shipPack Пакет кораблей для загрузки.
+         */
+        fun loadShipPack(shipPack: ArrayList<Ship>?) {
+            ships = shipPack
+        }
+    }
+
     fun initializeShips(views: ArrayList<ImageView?>): Boolean {
         ships = ArrayList()
         ships!!.add(Ship(10, 1, views[0]!!))
@@ -27,22 +43,5 @@ class ShipManager : Activity() {
         ships!!.add(Ship(31, 3, views[8]!!))
         ships!!.add(Ship(4, 4, views[9]!!))
         return true
-    }
-
-    companion object {
-
-
-         // Список кораблей
-        @JvmStatic
-        var ships: ArrayList<Ship>? = null
-            private set
-
-        /**
-         * Загружает пакет кораблей [shipPack].
-         * @param shipPack Пакет кораблей для загрузки.
-         */
-        fun loadShipPack(shipPack: ArrayList<Ship>?) {
-            ships = shipPack
-        }
     }
 }
