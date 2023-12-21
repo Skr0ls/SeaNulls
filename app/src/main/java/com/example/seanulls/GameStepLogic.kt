@@ -33,7 +33,7 @@ class GameStepLogic {
     private lateinit var buttonFieldTwo: Array<Array<CustomButton?>>
 
     // Переменные для управления таймером
-    private var seconds = 15
+    private var seconds = 10
     private var timer: Chronometer? = null
 
     // Текстовые поля для отображения ходов игроков
@@ -61,12 +61,12 @@ class GameStepLogic {
 
     private fun updateStep() {
         timer!!.stop()
-        seconds = 15
+        seconds = 10
         timer!!.start()
     }
 
     private fun changeStep() {
-        seconds = 15
+        seconds = 10
         isFirstPlayerStep = !isFirstPlayerStep
         setGridFieldsEnabled(isFirstPlayerStep)
     }
@@ -296,12 +296,14 @@ class GameStepLogic {
         return true
     }
 
+    //Метод который вызывается для завершения игры
     private fun handleGameEnd(winner: Int){
         resultIntent = Intent(context, ResultActivity::class.java).putExtra("winner", winner)
         context!!.startActivity(resultIntent)
         AppActivityManager.getGameActivity()?.finish()
     }
 
+    //Метод проверки соответсвия всех кнопок критериям
     private fun allButtonsMatchCriteria(): Boolean {
         val allButtonsOneFilled = buttonFieldOne.flatten().all { button -> checkButtonAssets(button) }
         val allButtonsTwoFilled = buttonFieldTwo.flatten().all { button -> checkButtonAssets(button) }
@@ -357,6 +359,7 @@ class GameStepLogic {
     }
 
 
+    //
     private fun handleButtonClick(isFirstPlayer: Boolean, x: Int, y :Int) {
         val buttonField = if (isFirstPlayer) buttonFieldOne else buttonFieldTwo
         val field = if (isFirstPlayer) fieldOne else fieldTwo
@@ -412,6 +415,7 @@ class GameStepLogic {
         }
     }
 
+    //Обработка тика таймера
     private val onTickListener = OnChronometerTickListener { chronometer ->
         chronometer.text = "" + --seconds
         if (seconds == 0) {
