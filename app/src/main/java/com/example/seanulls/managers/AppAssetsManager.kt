@@ -46,7 +46,7 @@ object AppAssetsManager {
     /**
      * Метод loadLayoutSprites загружает спрайты для различных элементов интерфейса игрового поля.
      */
-     fun loadLayoutSprites() {
+    private fun loadLayoutSprites() {
         val PATH = "$THEME/$LAYOUT"
         var items: Array<String>?
         val filter = ArrayList<Drawable>()
@@ -83,7 +83,7 @@ object AppAssetsManager {
      * Метод loadShipSprites загружает спрайты для изображений кораблей.
      */
 
-     fun loadShipSprites(){
+    private fun loadShipSprites(){
         ships = ArrayList()
         val sprites = ArrayList<Drawable>()
         for (i in 0..1) {
@@ -100,7 +100,7 @@ object AppAssetsManager {
 
     }
 
-     fun loadShipPartsSprites(partPack: Int, sprites: ArrayList<Drawable>, i: Int){
+    private fun loadShipPartsSprites(partPack: Int, sprites: ArrayList<Drawable>, i: Int){
         var PATH = THEME
         var items: Array<String>?
         //Загрузка частей корабля для игры
@@ -139,7 +139,7 @@ object AppAssetsManager {
         }
     }
 
-     fun loadShipViewSprites(shipIndex: Int, sprites: ArrayList<Drawable>){
+    private fun loadShipViewSprites(shipIndex: Int, sprites: ArrayList<Drawable>){
         var PATH = THEME
         var items: Array<String>?
 
@@ -168,7 +168,7 @@ object AppAssetsManager {
         }
     }
 
-     fun createShipAssetsSamples(sprites: ArrayList<Drawable>): List<ShipAssetSample>{
+    private fun createShipAssetsSamples(sprites: ArrayList<Drawable>): List<ShipAssetSample>{
         val body = ArrayList<Drawable>()
         body.add(sprites[0])
         body.add(sprites[2])
