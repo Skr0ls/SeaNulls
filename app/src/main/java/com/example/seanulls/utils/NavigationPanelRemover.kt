@@ -4,11 +4,10 @@ import android.app.Activity
 import android.os.Build
 import android.view.View
 
+/**
+ * Объект NavigationPanelRemover предоставляет метод remove для скрытия навигационной панели в приложении Android.
+ */
 object NavigationPanelRemover {
-    /**
-     * Объект NavigationPanelRemover предоставляет метод remove для скрытия навигационной панели в приложении Android.
-     */
-
     /**
      * Метод remove используется для скрытия навигационной панели в приложении.
      * Использует системные флаги для управления видимостью элементов интерфейса.

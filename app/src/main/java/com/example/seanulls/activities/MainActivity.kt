@@ -10,8 +10,11 @@ import com.example.seanulls.managers.AppActivityManager
 import com.example.seanulls.managers.AppAssetsManager
 import com.example.seanulls.utils.NavigationPanelRemover
 
+/**
+ * Активность MainActivity, представляет собой главное меню приложения
+ * Имеет 2 кнопки, "Играть" и "О Программе"
+ * */
 class MainActivity : AppCompatActivity() {
-
     private var intent: Intent? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

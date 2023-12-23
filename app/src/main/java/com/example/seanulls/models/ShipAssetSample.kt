@@ -2,6 +2,9 @@ package com.example.seanulls.models
 
 import android.graphics.drawable.Drawable
 
+/**
+ * Класс ShipAssetSample представляет собой моедль для хранения изображения корабля.
+ */
 open class ShipAssetSample internal constructor(
     var _body: ArrayList<Drawable>,
     var _front: ArrayList<Drawable>,
@@ -10,11 +13,6 @@ open class ShipAssetSample internal constructor(
     var _threePartShip: ArrayList<Drawable>,
     var _fourPartShip: ArrayList<Drawable>
 ) {
-
-    /**
-     * Класс ShipAssetSample представляет собой образец изображения корабля.
-     * Он содержит информацию о различных частях изображения корабля и предоставляет методы для доступа к этой информации.
-     */
 
     // Перечисление типов частей корабля
     enum class shipPartType {

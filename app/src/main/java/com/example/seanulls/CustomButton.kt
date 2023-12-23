@@ -3,13 +3,11 @@ package com.example.seanulls
 import android.content.Context
 import androidx.appcompat.widget.AppCompatButton
 
+/**
+ * Класс CustomButton представляет кастомную кнопку используемую для полей кораблей, наследующуюся от AppCompatButton.
+ * Он добавляет свойство isButtonPressed для отслеживания статуса нажатия кнопки.
+ */
 class CustomButton(context: Context) : AppCompatButton(context) {
-
-    /**
-     * Класс CustomButton представляет кастомизированную кнопку, наследующуюся от AppCompatButton.
-     * Он добавляет свойство isButtonPressed для отслеживания статуса нажатия кнопки.
-     */
-
     /**
      * Свойство isButtonPressed используется для отслеживания статуса нажатия кнопки.
      * Установка статуса происходит через метод setPressedStatus().

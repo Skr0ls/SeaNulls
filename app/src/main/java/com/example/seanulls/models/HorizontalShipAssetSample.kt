@@ -3,7 +3,7 @@ package com.example.seanulls.models
 import android.graphics.drawable.Drawable
 
 /**
- * Класс HorizontalShipAssetSample представляет образец изображения горизонтального корабля.
+ * Класс HorizontalShipAssetSample представляет собой моедль для хранения горизотнального корабля.
  * Он наследует свойства и методы класса ShipAssetSample для работы с горизонтальными кораблями.
  */
 class HorizontalShipAssetSample(

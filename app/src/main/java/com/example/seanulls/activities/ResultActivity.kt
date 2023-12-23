@@ -13,6 +13,9 @@ import com.example.seanulls.managers.AppActivityManager
 import com.example.seanulls.utils.MusicService
 import com.example.seanulls.utils.NavigationPanelRemover
 
+/**
+ * Активность ResultActivity, представляет собой окно результата игры(кто победил)
+ * */
 class ResultActivity : AppCompatActivity() {
 
     private var container: GridLayout? = null

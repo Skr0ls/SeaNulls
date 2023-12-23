@@ -6,12 +6,13 @@ import android.media.MediaPlayer
 import android.os.IBinder
 import com.example.seanulls.R
 
+/**
+ * Класс MusicService представляет собой службу для управления проигрыванием музыки в приложении.
+ */
 class MusicService : Service() {
-    /**
-     * Класс MusicService представляет службу для управления проигрыванием музыки в приложении.
-     */
-
     private var mediaPlayer: MediaPlayer? = null
+
+    //Метод onBind вызывается для привязки к службе. Возвращает null, поскольку служба не поддерживает привязку.
     override fun onBind(intent: Intent): IBinder? {
         return null
     }

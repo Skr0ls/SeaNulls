@@ -2,14 +2,12 @@ package com.example.seanulls.managers
 
 import androidx.appcompat.app.AppCompatActivity
 
+/**
+ * Класс AppActivityManager, представляет менеджер активностей приложения.
+ * Он используется для хранения ссылок на различные активности приложения: главное меню, этап размещения кораблей,
+ * игровой процесс и экран результатов.
+ */
 class AppActivityManager {
-
-    /**
-     * Класс AppActivityManager представляет менеджер активностей приложения.
-     * Он используется для хранения ссылок на различные активности приложения: главное меню, этап размещения кораблей,
-     * игровой процесс и экран результатов.
-     */
-
     companion object {
         private var mainMenu: AppCompatActivity? = null
         private var shipPlacingStep: AppCompatActivity? = null

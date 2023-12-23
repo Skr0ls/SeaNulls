@@ -8,23 +8,24 @@ import com.example.seanulls.models.ShipAssetSample
 import com.example.seanulls.models.VerticalShipAssetSample
 import java.io.IOException
 
+/**
+ * Объект AppAssetsManager отвечает за загрузку ресурсов из ассетов приложения.
+ * Он используется для работы с изображениями кораблей, различными элементами интерфейса и другими ресурсами.
+ */
 object AppAssetsManager {
-    /**
-     * Объект AppAssetsManager отвечает за загрузку ресурсов из ассетов приложения.
-     * Он используется для работы с изображениями кораблей, различными элементами интерфейса и другими ресурсами.
-     */
-
     private var context: Context? = null
     private var assets: AssetManager? = null
     private const val THEME_DEFAULT = "themes/default"
 
+    private const val LAYOUT = "layout"
+    private const val THEME = THEME_DEFAULT
+    
+    //Пути к ресурсам
     private const val VIEW_SHIPS_UNSELECTED = "ship/preview/unselected"
     private const val VIEW_SHIPS_SELECTED = "ship/preview/selected"
-    private const val LAYOUT = "layout"
     private const val SHIP_PARTS_COMMON = "ship/parts/common"
     private const val SHIP_PARTS_SELECTED = "ship/parts/selected"
     private const val SHIP_PARTS_DESTROYED = "ship/parts/destroyed"
-    private const val THEME = THEME_DEFAULT
 
     var ships: ArrayList<ShipAssetSample> = ArrayList()
     var layoutSprites: ArrayList<Drawable> = ArrayList()
@@ -100,6 +101,7 @@ object AppAssetsManager {
 
     }
 
+    //Метод загрузки частей корабля для создания кораблей на этапе игры
     private fun loadShipPartsSprites(partPack: Int, sprites: ArrayList<Drawable>, i: Int){
         var PATH = THEME
         var items: Array<String>?
@@ -139,10 +141,11 @@ object AppAssetsManager {
         }
     }
 
+    //Метод для загрузки полных кораблей для отображения на этапе постановки
     private fun loadShipViewSprites(shipIndex: Int, sprites: ArrayList<Drawable>){
         var PATH = THEME
         var items: Array<String>?
-
+        //Загрузка полных кораблей для расстановки
         try {
             if (shipIndex == 0) {
                 PATH += "/$VIEW_SHIPS_UNSELECTED"
@@ -168,6 +171,7 @@ object AppAssetsManager {
         }
     }
 
+    // Метод для создания образоцов кораблей из различных частей
     private fun createShipAssetsSamples(sprites: ArrayList<Drawable>): List<ShipAssetSample>{
         val body = ArrayList<Drawable>()
         body.add(sprites[0])
@@ -212,6 +216,7 @@ object AppAssetsManager {
         return ships
     }
 
+    // Получение образцов спрайтов для горизонтальных и вертикальных кораблей
     val horizontalShipAssets: HorizontalShipAssetSample
         get() = ships!![0] as HorizontalShipAssetSample
     val verticalShipAssets: VerticalShipAssetSample

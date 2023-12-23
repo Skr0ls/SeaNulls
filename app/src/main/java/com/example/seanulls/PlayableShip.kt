@@ -3,10 +3,16 @@ package com.example.seanulls
 import android.graphics.Point
 import android.util.Log
 
-class PlayableShip(@JvmField val id: Int, @JvmField val size: Int, @JvmField val isHorizontal: Boolean, @JvmField val positions: Array<Point?>) {
-    private var countOfDestroyedParts = 0
-    var isDestroyed = false
-        private set
+/**
+ * Класс PlayableShip представляет собой "играбельный" корабль
+ * */
+class PlayableShip( val id: Int,
+                    val size: Int,
+                    val isHorizontal: Boolean,
+                    val positions: Array<Point?>) {
+    private var countOfDestroyedParts = 0 //Кол-во разрушенных частей корабля
+    var isDestroyed = false //Флаг обозначающий, что корабль разрушен
+        private set//Приветный сеттер для этого флага
 
 
     /*

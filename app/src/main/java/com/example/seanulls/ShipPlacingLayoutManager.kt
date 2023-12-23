@@ -7,11 +7,10 @@ import android.widget.GridLayout
 import android.widget.ImageView
 import com.example.seanulls.managers.AppAssetsManager
 
+/**
+ * Объект ShipPlacingLayoutManager отвечает за размещения интерфейса для расстановки кораблей на поле в PreGameActivity
+ */
 object ShipPlacingLayoutManager {
-    /**
-     * Менеджер распределения кораблей на поле для размещения.
-     */
-
     private const val CELLS_COUNT_ON_LINE = 11 //Количество ячеек в одной строке с учетом букв и цифр
     const val CELL_COUNT = 10
     private var cellSide = 0 //Длина грани ячейки
@@ -21,24 +20,27 @@ object ShipPlacingLayoutManager {
     var grid: GridLayout? = null //Поле
     var layout: ArrayList<Drawable>? = null
 
+
     /**
-     * Создает представление для размещения кораблей.
-     * @param _context Контекст приложения
-     * @param _grid Поле для размещения кораблей
-     * @return Возвращает true, если успешно создано представление для размещения кораблей, в противном случае - false
+     * Метод создает представление для размещения кораблей на поле.
+     * @param _context Контекст активности
+     * @param _grid Поле для размещения
+     * @return Возвращает true, если представление успешно создано, иначе false
      */
     fun createPlaceableView(_context: Context, _grid: GridLayout?): Boolean {
         grid = _grid
 
+        //Определение размеров ячейки исходя из размеров экрана
         val width = _context.resources.displayMetrics.widthPixels / 2
         val height = _context.resources.displayMetrics.heightPixels
         val size = if (width < height) width else height
-
         cellSide = size / 12
+
         grid!!.columnCount = CELLS_COUNT_ON_LINE
         grid!!.rowCount = CELLS_COUNT_ON_LINE
         layout = AppAssetsManager.layoutSprites
 
+        //Инициализация сетки
         if (initializeGrid()) if (createButtonSet(
                 grid!!.context
             )
@@ -49,7 +51,7 @@ object ShipPlacingLayoutManager {
         return false
     }
 
-    //Инициализация сетки
+    //Метод отвечающий инициализация сетки
     private fun initializeGrid(): Boolean {
         val params = grid!!.layoutParams
 
@@ -60,7 +62,7 @@ object ShipPlacingLayoutManager {
         return true
     }
 
-    //Создание набора кнопок для поля
+    //Метод отвечающий за создание набора кнопок для поля
     private fun createButtonSet(_gridContext: Context): Boolean {
         buttonField = Array(10) { arrayOfNulls(10) }
 
@@ -81,7 +83,7 @@ object ShipPlacingLayoutManager {
         return true
     }
 
-    //Заполнение сетки кнопками
+    //Метод отвечающий за заполнение сетки кнопками
     private fun fillGridWithButtons(_gridContext: Context): Boolean {
         val gp = GridLayout.LayoutParams()
 

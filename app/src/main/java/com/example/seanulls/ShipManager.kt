@@ -3,33 +3,22 @@ package com.example.seanulls
 import android.app.Activity
 import android.widget.ImageView
 
+/**
+ * Класс ShipManager это менеджер кораблей.Он управляет созданием и загрузкой кораблей во время расстановки кораблей.
+ */
 class ShipManager : Activity() {
-    /**
-     * Менеджер кораблей. Управляет созданием и загрузкой кораблей в игре.
-     */
-
-
-    /**
-     * Инициализирует корабли с помощью предоставленных представлений [views].
-     * @param views Представления ImageView, представляющие корабли.
-     * @return true, если корабли успешно инициализированы, иначе false.
-     */
-
     companion object {
-        // Список кораблей
         @JvmStatic
-        var ships: ArrayList<Ship>? = null
+        var ships: ArrayList<Ship>? = null //Список кораблей, доступный статически
             private set
 
-        /**
-         * Загружает пакет кораблей [shipPack].
-         * @param shipPack Пакет кораблей для загрузки.
-         */
+       //Метод для загрузки пакета кораблей
         fun loadShipPack(shipPack: ArrayList<Ship>?) {
             ships = shipPack
         }
     }
 
+    //Метод отвечающий за инициализацию кораблей с предоставленными представлениями ImageView
     fun initializeShips(views: ArrayList<ImageView?>): Boolean {
         ships = ArrayList()
         ships!!.add(Ship(10, 1, views[0]!!))

@@ -11,6 +11,9 @@ import com.example.seanulls.R
 import com.example.seanulls.managers.AppActivityManager
 import com.example.seanulls.utils.NavigationPanelRemover
 
+/**
+ * Активность GameActivity, представляет собой главное окно игры, где расположены 2 поля игроков, и происходит сражение
+ * */
 class GameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,11 +28,11 @@ class GameActivity : AppCompatActivity() {
         val height = resources.displayMetrics.heightPixels
         val size = if (width  < height) width  else height
 
-        // Инициализация логики игрового процесса
+        //Инициализация логики игрового процесса
         val logic = GameStepLogic()
         logic.initializeGameField(findViewById<View>(R.id.field_1) as GridLayout, findViewById<View>(R.id.field_2) as GridLayout, size / 13, this)
 
-        // Инициализация таймера игры и текста для ходов игроков
+        //Инициализация таймера игры и текста для ходов игроков
         logic.initializeTimer(
             findViewById<View>(R.id.textViewFirstPlayerStep) as TextView,
             findViewById<View>(R.id.textViewSecondPlayerStep) as TextView,

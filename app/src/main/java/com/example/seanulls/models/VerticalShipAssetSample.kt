@@ -3,7 +3,7 @@ package com.example.seanulls.models
 import android.graphics.drawable.Drawable
 
 /**
- * Класс VerticalShipAssetSample представляет образец изображения вертикального корабля.
+ * Класс VerticalShipAssetSample представляет собой моедль для хранения вертикального корабля.
  * Он наследует свойства и методы класса ShipAssetSample для работы с вертикальными кораблями.
  */
 class VerticalShipAssetSample(
